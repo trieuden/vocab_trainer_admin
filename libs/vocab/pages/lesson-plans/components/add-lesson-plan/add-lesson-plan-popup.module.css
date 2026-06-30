@@ -1,0 +1,251 @@
+.sectionList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoFields {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.fieldRow label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+:global(.dark) .fieldRow label {
+  color: #cbd5e1;
+}
+
+.textInput,
+.selectInput {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #dbe2ea;
+  background: #f8fafc;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+:global(.dark) .textInput,
+:global(.dark) .selectInput {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+/* Màu header từng mục — dùng với BaseCollapsibleSection (headerClassName) */
+.sectionHeaderWarmUp {
+  background: #fff7ed;
+}
+
+.sectionHeaderInfo {
+  background: #f0f9ff;
+}
+
+.sectionHeaderVocab {
+  background: #ecfeff;
+}
+
+.sectionHeaderGrammar {
+  background: #f5f3ff;
+}
+
+.sectionHeaderListening {
+  background: #eff6ff;
+}
+
+.sectionHeaderWriting {
+  background: #f0fdf4;
+}
+
+.sectionHeaderSpeaking {
+  background: #fdf2f8;
+}
+
+:global(.dark) .sectionHeaderWarmUp,
+:global(.dark) .sectionHeaderVocab,
+:global(.dark) .sectionHeaderGrammar,
+:global(.dark) .sectionHeaderListening,
+:global(.dark) .sectionHeaderWriting,
+:global(.dark) .sectionHeaderSpeaking,
+:global(.dark) .sectionHeaderInfo {
+  background: #0f172a;
+}
+
+.tabGroup {
+  margin-left: auto;
+  align-self: flex-end;
+  width: fit-content;
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #dbe2ea;
+}
+
+:global(.dark) .tabGroup {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.tabBtn {
+  min-width: 82px;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: transparent;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:global(.dark) .tabBtn {
+  color: #cbd5e1;
+}
+
+.tabBtn:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+:global(.dark) .tabBtn:hover {
+  background: rgba(37, 99, 235, 0.22);
+}
+
+.tabActive {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.contentPanel {
+  margin-top: 12px;
+  width: 100%;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 12px 14px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+:global(.dark) .contentPanel {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.contentPanelTask {
+  border-top-left-radius: 10px;
+}
+
+.contentPanelGame {
+  border-top-right-radius: 10px;
+}
+
+.contentLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  color: #64748b;
+}
+
+:global(.dark) .contentLabel {
+  color: #94a3b8;
+}
+
+.contentText {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+:global(.dark) .contentText {
+  color: #e2e8f0;
+}
+
+.gameTypeGroup {
+  margin: 8px auto 0;
+  width: fit-content;
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #dbe2ea;
+}
+
+.gameTypeBtn {
+  min-width: 100px;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gameTypeBtn:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+:global(.dark) .gameTypeGroup {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global(.dark) .gameTypeBtn {
+  color: #e2e8f0;
+}
+
+.gameTypeBtnActive {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSecondary {
+  background: transparent;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.btnPrimary {
+  background: #2563eb;
+  color: #ffffff;
+}

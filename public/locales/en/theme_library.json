@@ -1,0 +1,8 @@
+{
+  "title": "Vocabulary Library",
+  "description": "Collections of vocabulary organized by theme.",
+  "add": "Create Library",
+  "search": "Search library...",
+  "delete_title": "Delete Library",
+  "delete_note": "Original vocabulary will not be deleted."
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Quản lý Topic",
+  "description": "Quản lý các chủ điểm bài học trong hệ thống.",
+  "add": "Thêm Topic",
+  "search": "Tìm theo tên topic...",
+  "col_id": "ID",
+  "col_name": "Tên Topic",
+  "col_desc": "Mô tả",
+  "col_lessons": "Số bài học",
+  "col_status": "Trạng thái",
+  "col_created": "Ngày tạo",
+  "col_actions": "Hành động",
+  "delete_title": "Xóa Topic",
+  "status_active": "Hoạt động",
+  "status_inactive": "Ẩn"
+}

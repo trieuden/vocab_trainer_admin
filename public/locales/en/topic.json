@@ -1,0 +1,16 @@
+{
+  "title": "Topic Management",
+  "description": "Manage learning topics in the system.",
+  "add": "Add Topic",
+  "search": "Search by topic name...",
+  "col_id": "ID",
+  "col_name": "Topic Name",
+  "col_desc": "Description",
+  "col_lessons": "Lessons",
+  "col_status": "Status",
+  "col_created": "Created At",
+  "col_actions": "Actions",
+  "delete_title": "Delete Topic",
+  "status_active": "Active",
+  "status_inactive": "Hidden"
+}

@@ -1,0 +1,280 @@
+.wrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.suggestContainer {
+  position: relative;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid #dbe2ea;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+:global(.dark) .inputRow {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wordSelect {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wordSelect:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.wordSelect::placeholder {
+  color: #94a3b8;
+}
+
+:global(.dark) .wordSelect {
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.hintText {
+  margin-top: -4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.suggestBox {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #ffffff;
+  max-height: 90px;
+  overflow: auto;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.suggestItem {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #eef2f7;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.suggestItem:last-child {
+  border-bottom: 0;
+}
+
+.suggestItem:hover {
+  background: #eff6ff;
+}
+
+:global(.dark) .suggestBox {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #0f172a;
+  box-shadow: none;
+}
+
+:global(.dark) .suggestItem {
+  color: #e2e8f0;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:global(.dark) .suggestItem:hover {
+  background: rgba(37, 99, 235, 0.18);
+}
+
+.baseTableHost {
+  width: 100%;
+}
+
+/* Cho phép định nghĩa Gemini xuống dòng (BaseTable mặc định nowrap + ellipsis) */
+.baseTableHost table :global(tbody td) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  vertical-align: top;
+  /* table-layout:fixed + min-width:auto khiến ô giãn theo nội dung — bỏ qua width cột (vd. Audio) */
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.baseTableEmbed {
+  width: 100%;
+}
+
+.loadingCell {
+  color: #64748b;
+  font-style: italic;
+}
+
+.removeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.removeBtn:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.removeBtn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.actionCellRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fetchDefBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6366f1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.fetchDefBtn:hover:not(:disabled) {
+  color: #4f46e5;
+  background: #eef2ff;
+}
+
+.fetchDefBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fetchDefBtn:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+.inlineSpinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  display: inline-block;
+  animation: spin-inline 0.7s linear infinite;
+}
+
+@keyframes spin-inline {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:global(.dark) .fetchDefBtn {
+  color: #a5b4fc;
+}
+
+:global(.dark) .fetchDefBtn:hover:not(:disabled) {
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.belowTable {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.geminiError {
+  font-size: 12.5px;
+  color: #dc2626;
+  max-width: 100%;
+}
+
+:global(.dark) .geminiError {
+  color: #f87171;
+}
+
+.definitionCell {
+  white-space: normal;
+  word-break: break-word;
+}
+
+:global(.dark) .removeBtn {
+  color: #94a3b8;
+}
+
+:global(.dark) .removeBtn:hover {
+  color: #f87171;
+  background: rgba(220, 38, 38, 0.12);
+}
+
+.audioLink {
+  color: #2563eb;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.audioLink:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .audioLink {
+  color: #93c5fd;
+}
+
+.emptyReadonly {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+}

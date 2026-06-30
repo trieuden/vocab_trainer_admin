@@ -1,0 +1,15 @@
+{
+  "title": "Quản lý Từ vựng",
+  "description": "Toàn bộ từ vựng trong hệ thống học.",
+  "add": "Thêm từ vựng",
+  "search": "Tìm từ vựng, nghĩa...",
+  "col_id": "ID",
+  "col_word": "Từ vựng",
+  "col_type": "Loại từ",
+  "col_meaning": "Nghĩa tiếng Việt",
+  "col_phonetic": "Phiên âm",
+  "col_audio": "Audio",
+  "col_topic": "Topic",
+  "col_actions": "Hành động",
+  "delete_title": "Xóa từ vựng"
+}

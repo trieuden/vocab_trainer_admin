@@ -1,0 +1,8 @@
+{
+  "title": "Roles & Permissions",
+  "description": "Manage roles and permissions for each user group.",
+  "add": "Add Role",
+  "search": "Search role...",
+  "delete_title": "Delete Role",
+  "delete_note": "Users in this role must be reassigned before deletion."
+}

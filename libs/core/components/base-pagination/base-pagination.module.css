@@ -1,0 +1,99 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 2px 4px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+:global(.dark) .wrapper { color: #64748b; }
+
+.info { flex: 1; min-width: 100px; font-size: 12.5px; }
+
+.pageSizeWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pageSizeLabel { font-size: 12.5px; }
+
+.pageSizeSelect {
+  padding: 4px 8px;
+  font-size: 12.5px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  colorScheme: light dark;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+:global(.dark) .pageSizeSelect { border-color: rgba(255,255,255,0.1); }
+
+.navWrap {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.navBtn:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+.navBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+:global(.dark) .navBtn { border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+:global(.dark) .navBtn:hover:not(:disabled) { background: rgba(59,130,246,0.1); border-color: #3b82f6; color: #60a5fa; }
+
+.pageBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: transparent;
+  color: #374151;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.pageBtn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+:global(.dark) .pageBtn { border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+:global(.dark) .pageBtn:hover { background: rgba(59,130,246,0.1); border-color: #3b82f6; color: #60a5fa; }
+
+.pageBtnActive {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.ellipsis {
+  padding: 0 4px;
+  color: #9ca3af;
+  font-size: 13px;
+  line-height: 30px;
+}

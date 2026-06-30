@@ -1,0 +1,54 @@
+/* ─────────────────────────────────────────────
+   BaseTable – LESS styles
+   Note: compile this file with lessc or a bundler
+   that supports LESS (e.g. add less + less-loader).
+   If your Next.js project doesn't yet support LESS,
+   see base-table.module.css for the plain-CSS version.
+   ───────────────────────────────────────────── */
+
+/* ── CSS custom properties (light mode defaults) ── */
+.base-table-wrapper {
+  --bt-bg: #ffffff;
+  --bt-border: #e5e7eb;
+  --bt-thead-bg: #f9fafb;
+  --bt-thead-text: #374151;
+  --bt-row-hover: #f0f9ff;
+  --bt-row-stripe: #fafafa;
+  --bt-text: #111827;
+  --bt-muted: #6b7280;
+  --bt-accent: #3b82f6;
+  --bt-accent-light: #eff6ff;
+  --bt-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --bt-radius: 12px;
+  --bt-resize-handle: #d1d5db;
+  --bt-resize-handle-hover: #3b82f6;
+  --bt-skeleton: #e5e7eb;
+  --bt-skeleton-shine: #f3f4f6;
+  --bt-picker-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+  position: relative;
+  width: 100%;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13.5px;
+  color: var(--bt-text);
+}
+
+/* Dark-mode overrides */
+:global(.dark) .base-table-wrapper {
+  --bt-bg: #0f172a;
+  --bt-border: rgba(255, 255, 255, 0.08);
+  --bt-thead-bg: rgba(255, 255, 255, 0.04);
+  --bt-thead-text: #94a3b8;
+  --bt-row-hover: rgba(59, 130, 246, 0.08);
+  --bt-row-stripe: rgba(255, 255, 255, 0.02);
+  --bt-text: #e2e8f0;
+  --bt-muted: #64748b;
+  --bt-accent: #60a5fa;
+  --bt-accent-light: rgba(59, 130, 246, 0.12);
+  --bt-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --bt-resize-handle: rgba(255, 255, 255, 0.12);
+  --bt-resize-handle-hover: #60a5fa;
+  --bt-skeleton: rgba(255, 255, 255, 0.06);
+  --bt-skeleton-shine: rgba(255, 255, 255, 0.1);
+  --bt-picker-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}

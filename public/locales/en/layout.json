@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "User Management",
+    "teachers": "Teachers",
+    "students": "Students",
+    "topic": "Topic Management",
+    "vocabulary": "Vocabulary",
+    "theme": "Theme Management",
+    "theme_categories": "Categories",
+    "theme_library": "Vocab Library",
+    "minigame": "Mini Game",
+    "lesson_plans": "Lesson Plans",
+    "roles": "Roles & Permissions",
+    "settings": "Settings"
+  },
+  "header": {
+    "search_placeholder": "Global search...",
+    "notifications": "Notifications",
+    "switch_to_light": "Switch to Light Mode",
+    "switch_to_dark": "Switch to Dark Mode",
+    "admin": "ADMIN"
+  }
+}

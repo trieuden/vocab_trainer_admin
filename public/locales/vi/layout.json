@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Quản lý Người dùng",
+    "teachers": "Giáo viên",
+    "students": "Học sinh",
+    "topic": "Quản lý Topic",
+    "vocabulary": "Quản lý Từ vựng",
+    "theme": "Quản lý Chủ đề",
+    "theme_categories": "Chủ đề",
+    "theme_library": "Thư viện từ",
+    "minigame": "Quản lý Mini Game",
+    "lesson_plans": "Quản lý Giáo án",
+    "roles": "Phân quyền",
+    "settings": "Cài đặt"
+  },
+  "header": {
+    "search_placeholder": "Tìm kiếm toàn cục...",
+    "notifications": "Thông báo",
+    "switch_to_light": "Chuyển sang giao diện sáng",
+    "switch_to_dark": "Chuyển sang giao diện tối",
+    "admin": "ADMIN"
+  }
+}

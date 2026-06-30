@@ -1,0 +1,14 @@
+{
+  "title": "Mini Game Management",
+  "description": "Configure and manage vocabulary learning games.",
+  "add": "Add Game",
+  "search": "Search mini game...",
+  "delete_title": "Delete Mini Game",
+  "col_id": "ID",
+  "col_name": "Name",
+  "col_type": "Type",
+  "col_desc": "Description",
+  "col_status": "Status",
+  "col_updated": "Updated",
+  "col_actions": "Actions"
+}

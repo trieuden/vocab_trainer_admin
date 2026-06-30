@@ -1,0 +1,28 @@
+{
+  "title": "Quản lý Học sinh",
+  "description": "Danh sách toàn bộ học sinh đang học trên hệ thống.",
+  "add": "Thêm học sinh",
+  "col_id": "ID",
+  "col_name": "Họ và tên",
+  "col_email": "Email",
+  "col_username": "Tên đăng nhập",
+  "col_phone": "Số điện thoại",
+  "col_status": "Trạng thái",
+  "col_actions": "Hành động",
+  "delete_title": "Xóa học sinh",
+  "advanced_search": {
+    "title": "Tìm kiếm nâng cao",
+    "open": "Mở bộ lọc",
+    "close": "Đóng bộ lọc",
+    "name": "Tên",
+    "name_placeholder": "Nhập tên học sinh",
+    "username": "Tên đăng nhập",
+    "username_placeholder": "Nhập username",
+    "email": "Email",
+    "email_placeholder": "Nhập email",
+    "phone": "Số điện thoại",
+    "phone_placeholder": "Nhập số điện thoại",
+    "search": "Tìm kiếm",
+    "reset": "Xóa bộ lọc"
+  }
+}

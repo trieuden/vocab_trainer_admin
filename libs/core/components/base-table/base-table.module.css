@@ -1,0 +1,398 @@
+/* ─────────────────────────────────────────────
+   BaseTable – CSS Module
+   ───────────────────────────────────────────── */
+
+/* ── CSS custom properties (light mode defaults) ── */
+.wrapper {
+  --bt-bg: #ffffff;
+  --bt-border: #e5e7eb;
+  --bt-thead-bg: #f9fafb;
+  --bt-thead-text: #374151;
+  --bt-row-hover: #f0f9ff;
+  --bt-row-stripe: #fafafa;
+  --bt-text: #111827;
+  --bt-muted: #6b7280;
+  --bt-accent: #3b82f6;
+  --bt-accent-light: #eff6ff;
+  --bt-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --bt-radius: 12px;
+  --bt-resize-handle: #d1d5db;
+  --bt-resize-handle-hover: #3b82f6;
+  --bt-skeleton: #e5e7eb;
+  --bt-skeleton-shine: #f3f4f6;
+  --bt-picker-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  /* Nền đặc cho cột ghim — tránh nội dung cuộn “xuyên” qua khi thead/stripe dùng màu trong suốt */
+  --bt-thead-pinned-bg: #f3f4f6;
+  --bt-pinned-body-bg: #ffffff;
+  --bt-pinned-body-stripe: #fafafa;
+  --bt-pinned-body-hover: #f0f9ff;
+
+  position: relative;
+  width: 100%;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13.5px;
+  color: var(--bt-text);
+}
+
+/* Dark-mode overrides – respects the project's .dark class on <html> */
+:global(.dark) .wrapper {
+  --bt-bg: #0f172a;
+  --bt-border: rgba(255, 255, 255, 0.08);
+  --bt-thead-bg: rgba(255, 255, 255, 0.04);
+  --bt-thead-text: #94a3b8;
+  --bt-row-hover: rgba(59, 130, 246, 0.08);
+  --bt-row-stripe: rgba(255, 255, 255, 0.02);
+  --bt-text: #e2e8f0;
+  --bt-muted: #64748b;
+  --bt-accent: #60a5fa;
+  --bt-accent-light: rgba(59, 130, 246, 0.12);
+  --bt-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --bt-resize-handle: rgba(255, 255, 255, 0.12);
+  --bt-resize-handle-hover: #60a5fa;
+  --bt-skeleton: rgba(255, 255, 255, 0.06);
+  --bt-skeleton-shine: rgba(255, 255, 255, 0.1);
+  --bt-picker-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --bt-thead-pinned-bg: #1e293b;
+  --bt-pinned-body-bg: #0f172a;
+  --bt-pinned-body-stripe: #151f33;
+  --bt-pinned-body-hover: #1c2d4a;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 14px;
+  background: var(--bt-bg);
+  border: 1px solid var(--bt-border);
+  border-bottom: none;
+  border-radius: var(--bt-radius) var(--bt-radius) 0 0;
+}
+
+.toolbarRight {
+  position: relative;
+}
+
+/* Column picker button */
+.pickerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--bt-muted);
+  background: transparent;
+  border: 1px solid var(--bt-border);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.pickerBtn:hover {
+  color: var(--bt-accent);
+  border-color: var(--bt-accent);
+  background: var(--bt-accent-light);
+}
+
+/* Column picker dropdown */
+.pickerDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bt-bg);
+  border: 1px solid var(--bt-border);
+  border-radius: 10px;
+  box-shadow: var(--bt-picker-shadow);
+  z-index: 200;
+  padding: 10px 0;
+  animation: picker-fade-in 0.15s ease;
+}
+
+.pickerDropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes picker-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pickerTitle {
+  padding: 0 14px 8px;
+  margin: 0 0 4px 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bt-muted);
+  border-bottom: 1px solid var(--bt-border);
+}
+
+.pickerItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--bt-text);
+  transition: background 0.12s;
+  user-select: none;
+}
+
+.pickerItem:hover {
+  background: var(--bt-accent-light);
+  color: var(--bt-accent);
+}
+
+.pickerItem input[type='checkbox'] {
+  accent-color: var(--bt-accent);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* ── Scroll container ── */
+.scrollContainer {
+  overflow-x: auto;
+  border: 1px solid var(--bt-border);
+  border-radius: 0 0 var(--bt-radius) var(--bt-radius);
+  box-shadow: var(--bt-shadow);
+  background: var(--bt-bg);
+}
+
+.scrollContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: var(--bt-border);
+  border-radius: 99px;
+}
+
+/* ── Table base ── */
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* ── Header ── */
+.thead {
+  background: var(--bt-thead-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.th {
+  padding: 11px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.055em;
+  color: var(--bt-thead-text);
+  border-bottom: 1px solid var(--bt-border);
+  white-space: nowrap;
+  position: relative;
+}
+
+.thSortable {
+  cursor: pointer;
+}
+
+.thSortable:hover {
+  background: var(--bt-accent-light);
+  color: var(--bt-accent);
+}
+
+.thInner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.thLabel {
+  flex: 1;
+}
+
+.sortIcon {
+  display: flex;
+  align-items: center;
+  color: var(--bt-accent);
+  flex-shrink: 0;
+}
+
+.sortIdle {
+  color: var(--bt-muted);
+  opacity: 0.5;
+}
+
+.th:hover .sortIdle {
+  opacity: 1;
+  color: var(--bt-accent);
+}
+
+/* ── Cột ghim (sticky) khi cuộn ngang ── */
+.thPinnedLeft,
+.thPinnedRight {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--bt-thead-pinned-bg);
+  background-clip: padding-box;
+}
+
+.thPinnedLeft.thSortable:hover,
+.thPinnedRight.thSortable:hover {
+  background-color: color-mix(in srgb, var(--bt-thead-pinned-bg) 82%, var(--bt-accent) 18%);
+  color: var(--bt-accent);
+}
+
+.thPinnedLeft {
+  box-shadow: 6px 0 12px -8px rgba(15, 23, 42, 0.18);
+}
+
+.thPinnedRight {
+  box-shadow: -6px 0 12px -8px rgba(15, 23, 42, 0.18);
+}
+
+:global(.dark) .thPinnedRight {
+  box-shadow: -6px 0 14px -8px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .thPinnedLeft {
+  box-shadow: 6px 0 14px -8px rgba(0, 0, 0, 0.5);
+}
+
+.tdPinnedLeft,
+.tdPinnedRight {
+  position: sticky;
+  z-index: 5;
+  background-color: var(--bt-pinned-body-bg);
+  background-clip: padding-box;
+}
+
+.tdPinnedLeft {
+  box-shadow: 6px 0 12px -8px rgba(15, 23, 42, 0.12);
+}
+
+.tdPinnedRight {
+  box-shadow: -6px 0 12px -8px rgba(15, 23, 42, 0.12);
+}
+
+.row:nth-child(even) .tdPinnedLeft,
+.row:nth-child(even) .tdPinnedRight {
+  background-color: var(--bt-pinned-body-stripe);
+}
+
+.row:hover .tdPinnedLeft,
+.row:hover .tdPinnedRight {
+  background-color: var(--bt-pinned-body-hover);
+}
+
+.skeletonRow .tdPinnedLeft,
+.skeletonRow .tdPinnedRight {
+  background-color: var(--bt-pinned-body-bg);
+}
+
+:global(.dark) .tdPinnedLeft {
+  box-shadow: 6px 0 14px -8px rgba(0, 0, 0, 0.35);
+}
+
+:global(.dark) .tdPinnedRight {
+  box-shadow: -6px 0 14px -8px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Resize handle ── */
+.resizeHandle {
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--bt-resize-handle);
+  cursor: col-resize;
+  transition: background 0.15s;
+  z-index: 5;
+}
+
+.resizeHandle:hover,
+.resizeHandle:active {
+  background: var(--bt-resize-handle-hover);
+}
+
+/* ── Body rows ── */
+.row {
+  transition: background 0.12s;
+}
+
+.row:nth-child(even) {
+  background: var(--bt-row-stripe);
+}
+
+.row:hover {
+  background: var(--bt-row-hover);
+}
+
+.td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--bt-border);
+  color: var(--bt-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.row:last-child .td {
+  border-bottom: none;
+}
+
+/* ── Empty state ── */
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--bt-muted);
+  font-size: 13.5px;
+}
+
+/* ── Skeleton loader ── */
+.skeletonRow {
+  pointer-events: none;
+}
+
+.skeletonCell {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--bt-skeleton) 25%,
+    var(--bt-skeleton-shine) 50%,
+    var(--bt-skeleton) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

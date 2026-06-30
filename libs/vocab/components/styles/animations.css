@@ -1,0 +1,76 @@
+/* PushPin Animations */
+
+/* Animation - falling down at 40 degree angle */
+@keyframes pin-fall {
+    0% {
+        transform: rotate(40deg) translate(-100px, -100px);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(40deg) translate(0, 0);
+        opacity: 1;
+    }
+}
+
+.animate-pin-fall {
+    animation: pin-fall 1.5s ease-out;
+}
+
+/* Animation - bounce effect */
+@keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
+}
+
+/* Animation - floating effect */
+@keyframes pin-float {
+    0%,
+    100% {
+        transform: rotate(40deg) translateY(0px);
+    }
+    50% {
+        transform: rotate(40deg) translateY(-8px);
+    }
+}
+
+.animate-pin-float {
+    animation: pin-float 3s ease-in-out infinite;
+}
+
+/* Animation - spin and fall */
+@keyframes pin-spin-fall {
+    0% {
+        transform: rotate(0deg) translate(-80px, -120px);
+        opacity: 0;
+    }
+    50% {
+        transform: rotate(180deg) translate(-40px, -60px);
+        opacity: 0.8;
+    }
+    100% {
+        transform: rotate(40deg) translate(0, 0);
+        opacity: 1;
+    }
+}
+
+.animate-pin-spin-fall {
+    animation: pin-spin-fall 2s ease-out;
+}

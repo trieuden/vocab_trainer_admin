@@ -1,0 +1,29 @@
+{
+  "title": "Quản lý Giáo viên",
+  "description": "Danh sách toàn bộ giáo viên trong hệ thống.",
+  "add": "Thêm giáo viên",
+  "search": "Tìm theo tên, email, ID...",
+  "col_id": "ID",
+  "col_name": "Họ và tên",
+  "col_email": "Email",
+  "col_phone": "Số điện thoại",
+  "col_username": "Tên đăng nhập",
+  "col_status": "Trạng thái",
+  "col_actions": "Hành động",
+  "delete_title": "Xóa giáo viên",
+  "advanced_search": {
+    "title": "Tìm kiếm nâng cao",
+    "open": "Mở bộ lọc",
+    "close": "Đóng bộ lọc",
+    "name": "Tên",
+    "name_placeholder": "Nhập tên giáo viên",
+    "username": "Tên đăng nhập",
+    "username_placeholder": "Nhập username",
+    "email": "Email",
+    "email_placeholder": "Nhập email",
+    "phone": "Số điện thoại",
+    "phone_placeholder": "Nhập số điện thoại",
+    "search": "Tìm kiếm",
+    "reset": "Xóa bộ lọc"
+  }
+}

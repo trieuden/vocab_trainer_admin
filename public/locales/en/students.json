@@ -1,0 +1,28 @@
+{
+  "title": "Student Management",
+  "description": "List of all students currently learning on the platform.",
+  "add": "Add Student",
+  "col_id": "ID",
+  "col_name": "Full Name",
+  "col_email": "Email",
+  "col_username": "Username",
+  "col_phone": "Phone",
+  "col_status": "Status",
+  "col_actions": "Actions",
+  "delete_title": "Delete Student",
+  "advanced_search": {
+    "title": "Advanced Search",
+    "open": "Open Filters",
+    "close": "Close Filters",
+    "name": "Name",
+    "name_placeholder": "Enter student name",
+    "username": "Username",
+    "username_placeholder": "Enter username",
+    "email": "Email",
+    "email_placeholder": "Enter email",
+    "phone": "Phone Number",
+    "phone_placeholder": "Enter phone number",
+    "search": "Search",
+    "reset": "Clear Filters"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Phân quyền",
+  "description": "Quản lý vai trò và quyền hạn cho từng nhóm người dùng.",
+  "add": "Thêm vai trò",
+  "search": "Tìm vai trò...",
+  "delete_title": "Xóa vai trò",
+  "delete_note": "Hệ thống sẽ yêu cầu chuyển người dùng sang vai trò khác trước."
+}

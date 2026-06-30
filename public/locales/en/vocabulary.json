@@ -1,0 +1,15 @@
+{
+  "title": "Vocabulary Management",
+  "description": "All vocabulary items in the learning system.",
+  "add": "Add Vocabulary",
+  "search": "Search word, meaning...",
+  "col_id": "ID",
+  "col_word": "Word",
+  "col_type": "Type",
+  "col_meaning": "Vietnamese Meaning",
+  "col_phonetic": "Phonetic",
+  "col_audio": "Audio",
+  "col_topic": "Topic",
+  "col_actions": "Actions",
+  "delete_title": "Delete Vocabulary"
+}

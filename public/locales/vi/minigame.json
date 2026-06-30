@@ -1,0 +1,14 @@
+{
+  "title": "Quản lý Mini Game",
+  "description": "Cấu hình và quản lý các trò chơi học từ vựng.",
+  "add": "Thêm Game",
+  "search": "Tìm mini game...",
+  "delete_title": "Xóa Mini Game",
+  "col_id": "ID",
+  "col_name": "Tên",
+  "col_type": "Loại",
+  "col_desc": "Mô tả",
+  "col_status": "Trạng thái",
+  "col_updated": "Cập nhật",
+  "col_actions": "Thao tác"
+}
