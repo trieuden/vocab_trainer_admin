@@ -70,23 +70,64 @@ function WordsTable({ block }: { block: any }) {
   );
 }
 
+function QuestionsTable({ block }: { block: any }) {
+  const { t: tl } = useTranslation('lesson_plans');
+
+  const questions: any[] = block?.questions ?? [];
+  if (!questions.length) {
+    return <div className={styles.emptyWords}>{tl('detail.no_questions')}</div>;
+  }
+
+  return (
+    <div className={styles.questionList}>
+      {questions.map((q: any, i: number) => (
+        <div key={q.id ?? i} className={styles.questionItem}>
+          <div className={styles.questionHeader}>
+            <span className={styles.questionNumber}>{i + 1}.</span>
+            <span className={styles.questionText}>{q.question}</span>
+          </div>
+          <div className={styles.answerList}>
+            {(q.answers ?? []).map((a: any, aIdx: number) => (
+              <div
+                key={a.id ?? aIdx}
+                className={`${styles.answerItem} ${a.isRight ? styles.answerCorrect : ''}`}
+              >
+                <span className={styles.answerLabel}>{String.fromCharCode(65 + aIdx)}</span>
+                <span className={styles.answerText}>{a.answer}</span>
+                {a.isRight && <span className={styles.correctBadge}>✓</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SegmentSection({ title, headerClassName, sectionType, block, expanded, onToggle, toggleAriaLabel }: SegmentSectionProps) {
   const { t: tl } = useTranslation('lesson_plans');
+
+  const isTask = sectionType === ELessonPlan.LessonPlanType.TASK.code;
+  const isGame = sectionType === ELessonPlan.LessonPlanType.GAME.code;
+  const hasQuestions = block?.questions?.length > 0;
 
   return (
     <BaseCollapsibleSection title={title} expanded={expanded} onToggle={onToggle} headerClassName={headerClassName} toggleAriaLabel={toggleAriaLabel}>
       {/* Nội dung TASK */}
-      <div className={`${styles.contentPanel} ${styles.contentPanelTask}`} hidden={sectionType !== ELessonPlan.LessonPlanType.TASK.code}>
+      <div className={`${styles.contentPanel} ${styles.contentPanelTask}`} hidden={!isTask}>
         <div className={styles.contentLabel}>{tl('detail.task')}</div>
-        <div className={styles.contentText}>{tl('add_popup.task_line', { section: title })}</div>
+        {hasQuestions ? (
+          <QuestionsTable block={block} />
+        ) : (
+          <div className={styles.contentText}>{block?.name ?? tl('add_popup.task_line', { section: title })}</div>
+        )}
       </div>
 
       {/* Nội dung GAME */}
-      <div className={`${styles.contentPanel} ${styles.contentPanelGame}`} hidden={sectionType !== ELessonPlan.LessonPlanType.GAME.code}>
+      <div className={`${styles.contentPanel} ${styles.contentPanelGame}`} hidden={!isGame}>
         <div className={styles.contentLabel}>{tl('detail.game')}</div>
 
         <div className={styles.gameInfoText}>
-          {/* <span className={styles.gamePrefix}>{tl('detail.game_prefix')}</span> */}
           <span className={styles.gameName}>{gameTypeMap[block?.type ?? '']}</span>
         </div>
 

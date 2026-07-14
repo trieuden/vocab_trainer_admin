@@ -17,11 +17,18 @@
     "save": "Lưu giáo án",
     "save_pending": "API lưu giáo án chưa kết nối. Dữ liệu trên form chỉ lưu tạm trong phiên.",
     "save_no_words": "Chưa có từ nào trong Flashcard các mục. Hãy mở Trò chơi → FlashCard và thêm từ trước khi lưu.",
-    "save_draft_ok": "Đã ghi nhận {{count}} từ (xem console để xem chi tiết theo từng mục). API lưu server chưa kết nối."
+    "save_draft_ok": "Đã ghi nhận {{count}} từ (xem console để xem chi tiết theo từng mục). API lưu server chưa kết nối.",
+    "task_type_essay": "Tự luận",
+    "task_type_multiple_choice": "Trắc nghiệm",
+    "question_placeholder": "Nhập câu hỏi",
+    "correct_answer_placeholder": "Nhập đáp án đúng",
+    "generate_wrong_answers": "Tạo 3 đáp án sai",
+    "add_question": "Thêm câu hỏi"
   },
   "detail": {
     "title": "Chi tiết giáo án",
     "no_words": "Chưa có từ trong Flashcard.",
+    "no_questions": "Chưa có câu hỏi.",
     "open_audio": "Mở audio",
     "task": "Bài tập",
     "game": "Trò chơi",

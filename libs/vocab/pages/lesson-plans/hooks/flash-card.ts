@@ -120,6 +120,15 @@ export function useFlashcardWordManager() {
         return data;
     };
 
+    const clear = () => {
+        setWords([]);
+        setInputWord("");
+        setShowSuggest(false);
+        setLoadingMap({});
+        setIsAddingWord(false);
+        setGenerateLoading(false);
+    };
+
     return {
         inputWord,
         setInputWord,
@@ -135,6 +144,7 @@ export function useFlashcardWordManager() {
         generateLoading,
         generateDefinitions,
         generateAllDefinitions,
+        clear,
     };
 }
 

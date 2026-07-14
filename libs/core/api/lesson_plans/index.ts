@@ -5,6 +5,7 @@ const ENDPOINTS = {
   GET_LIST: '/lesson-plans/list',
   CREATE: '/lesson-plans',
   DETAIL: '/lesson-plans/detail',
+  GEMINI_WRONG_ANSWERS: '/integration/gemini/generate-wrong-answers',
 } as const;
 
 async function getLessonPlans(body: GetLessonPlansDto) {
@@ -22,4 +23,12 @@ async function getLessonPlanDetail(id: string) {
   return data;
 }
 
-export { getLessonPlans, createLessonPlan, getLessonPlanDetail };
+async function generateWrongAnswers(question: string, correctAnswer: string) {
+  const { data } = await vocabApiClient.post(ENDPOINTS.GEMINI_WRONG_ANSWERS, {
+    question,
+    correctAnswer,
+  });
+  return data;
+}
+
+export { getLessonPlans, createLessonPlan, getLessonPlanDetail, generateWrongAnswers };

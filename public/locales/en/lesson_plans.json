@@ -17,11 +17,18 @@
     "save": "Save lesson plan",
     "save_pending": "Save API is not connected yet. Form data is only kept in this session.",
     "save_no_words": "No flashcard words yet. Open Game → FlashCard and add words before saving.",
-    "save_draft_ok": "Recorded {{count}} word(s) (see console for per-section detail). Server save API not connected yet."
+    "save_draft_ok": "Recorded {{count}} word(s) (see console for per-section detail). Server save API not connected yet.",
+    "task_type_essay": "Essay",
+    "task_type_multiple_choice": "Multiple Choice",
+    "question_placeholder": "Enter question",
+    "correct_answer_placeholder": "Enter correct answer",
+    "generate_wrong_answers": "Generate 3 wrong answers",
+    "add_question": "Add question"
   },
   "detail": {
     "title": "Lesson plan detail",
     "no_words": "No flashcard words yet.",
+    "no_questions": "No questions yet.",
     "open_audio": "Open audio",
     "task": "Task",
     "game": "Game",

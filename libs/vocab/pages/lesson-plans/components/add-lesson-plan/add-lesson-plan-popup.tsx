@@ -10,7 +10,8 @@ import { useFlashcardWordManager } from "../../hooks/flash-card";
 import { ELessonPlan, EGame } from "@/core/enums";
 import { CreateLessonPlanDto } from "@/core/api/lesson_plans/dtos";
 import { GameType, LessonPlanType } from "@/core/api/lesson_plans/types";
-
+import { TaskContent } from "./task-content";
+import { MultipleChoiceQuestionDto } from "@/core/api/lesson_plans/dtos";
 
 function initialSegmentState() {
     return {
@@ -18,6 +19,8 @@ function initialSegmentState() {
         tab: ELessonPlan.LessonPlanType.TASK.code,
         gameType: EGame.GameType.FLASHCARD.code,
         gameVisited: false,
+        taskType: "ESSAY",
+        questions: [] as MultipleChoiceQuestionDto[],
     };
 }
 
@@ -26,6 +29,8 @@ interface SegmentState {
     tab: string;
     gameType: string;
     gameVisited: boolean;
+    taskType: string;
+    questions: MultipleChoiceQuestionDto[];
 }
 
 interface AddLessonPlanPopupProps {
@@ -62,6 +67,22 @@ export function AddLessonPlanPopup({ open, onClose, onCreated }: AddLessonPlanPo
         level: ELessonPlan.LessonLevel.A1,
     });
 
+    const resetAll = () => {
+        setLessonPlan({ name: '', level: ELessonPlan.LessonLevel.A1 });
+        setWarmUp(initialSegmentState());
+        setVocab(initialSegmentState());
+        setGrammar(initialSegmentState());
+        setListening(initialSegmentState());
+        setWriting(initialSegmentState());
+        setSpeaking(initialSegmentState());
+        warmUpFlash.clear();
+        vocabFlash.clear();
+        grammarFlash.clear();
+        listeningFlash.clear();
+        writingFlash.clear();
+        speakingFlash.clear();
+    };
+
     const handleCreateLessonPlan = async () => {
         if (isSaving) return;
 
@@ -71,6 +92,7 @@ export function AddLessonPlanPopup({ open, onClose, onCreated }: AddLessonPlanPo
 
             if (response?.message) {
                 toast.success(`✅ ${response.message}`, 5500);
+                resetAll();
                 onCreated?.();
                 onClose();
             }
@@ -85,33 +107,131 @@ export function AddLessonPlanPopup({ open, onClose, onCreated }: AddLessonPlanPo
             warmUp: warmUpFlash.words,
             warmUpType: warmUp.tab as LessonPlanType,
             warmUpGameName: warmUp.gameType as GameType,
-            
+            warmUpTaskType: warmUp.taskType,
+            warmUpQuestions: warmUp.questions,
+
             vocab: vocabFlash.words,
             vocabType: vocab.tab as LessonPlanType,
             vocabGameName: vocab.gameType as GameType,
-            
+            vocabTaskType: vocab.taskType,
+            vocabQuestions: vocab.questions,
+
             grammar: grammarFlash.words,
             grammarType: grammar.tab as LessonPlanType,
             grammarGameName: grammar.gameType as GameType,
+            grammarTaskType: grammar.taskType,
+            grammarQuestions: grammar.questions,
 
             listening: listeningFlash.words,
             listeningType: listening.tab as LessonPlanType,
             listeningGameName: listening.gameType as GameType,
+            listeningTaskType: listening.taskType,
+            listeningQuestions: listening.questions,
 
             writing: writingFlash.words,
             writingType: writing.tab as LessonPlanType,
             writingGameName: writing.gameType as GameType,
+            writingTaskType: writing.taskType,
+            writingQuestions: writing.questions,
 
             speaking: speakingFlash.words,
             speakingType: speaking.tab as LessonPlanType,
             speakingGameName: speaking.gameType as GameType,
+            speakingTaskType: speaking.taskType,
+            speakingQuestions: speaking.questions,
         }));
-    }, [warmUpFlash.words, vocabFlash.words, grammarFlash.words, listeningFlash.words, writingFlash.words, speakingFlash.words, warmUp.tab, warmUp.gameType, vocab.tab, vocab.gameType, grammar.tab, grammar.gameType, listening.tab, listening.gameType, writing.tab, writing.gameType, speaking.tab, speaking.gameType]);
+    }, [
+        warmUpFlash.words, vocabFlash.words, grammarFlash.words,
+        listeningFlash.words, writingFlash.words, speakingFlash.words,
+        warmUp.tab, warmUp.gameType, warmUp.taskType, warmUp.questions,
+        vocab.tab, vocab.gameType, vocab.taskType, vocab.questions,
+        grammar.tab, grammar.gameType, grammar.taskType, grammar.questions,
+        listening.tab, listening.gameType, listening.taskType, listening.questions,
+        writing.tab, writing.gameType, writing.taskType, writing.questions,
+        speaking.tab, speaking.gameType, speaking.taskType, speaking.questions,
+    ]);
+
+    const renderSection = (
+        label: string,
+        state: SegmentState,
+        setState: React.Dispatch<React.SetStateAction<SegmentState>>,
+        flashcard: ReturnType<typeof useFlashcardWordManager>,
+        headerClass: string,
+    ) => (
+        <BaseCollapsibleSection
+            title={label}
+            expanded={state.expanded}
+            onToggle={() => setState((s) => ({ ...s, expanded: !s.expanded }))}
+            headerClassName={headerClass}
+            toggleAriaLabel={label}
+        >
+            <div className={styles.tabGroup} role="tablist" aria-label={label}>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={state.tab === ELessonPlan.LessonPlanType.TASK.code}
+                    className={`${styles.tabBtn} ${state.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
+                    onClick={() => setState((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
+                >
+                    {tl("add_popup.tab_task")}
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={state.tab === "GAME"}
+                    className={`${styles.tabBtn} ${state.tab === "GAME" ? styles.tabActive : ""}`}
+                    onClick={() => setState((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
+                >
+                    {tl("add_popup.tab_game")}
+                </button>
+            </div>
+
+            <div className={state.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
+                <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
+
+                <div hidden={state.tab !== "TASK"}>
+                    <TaskContent
+                        section={label}
+                        taskType={state.taskType}
+                        onTaskTypeChange={(type) => setState((s) => ({ ...s, taskType: type }))}
+                        questions={state.questions}
+                        onQuestionsChange={(questions) => setState((s) => ({ ...s, questions }))}
+                    />
+                </div>
+
+                {state.gameVisited ? (
+                    <div hidden={state.tab !== "GAME"}>
+                        <div className={styles.gameTypeGroup}>
+                            <button
+                                type="button"
+                                className={`${styles.gameTypeBtn} ${state.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
+                                onClick={() => setState((s) => ({ ...s, gameType: EGame.GameType.FLASHCARD.code }))}
+                            >
+                                {EGame.GameType.FLASHCARD.name}
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.gameTypeBtn} ${state.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
+                                onClick={() => setState((s) => ({ ...s, gameType: EGame.GameType.CROSSWORD.code }))}
+                            >
+                                {EGame.GameType.CROSSWORD.name}
+                            </button>
+                        </div>
+                        <div hidden={state.gameType !== EGame.GameType.FLASHCARD.code}>
+                            <FlashcardModal flashcard={flashcard} />
+                        </div>
+                        <div hidden={state.gameType !== EGame.GameType.CROSSWORD.code}>
+                            <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+        </BaseCollapsibleSection>
+    );
 
     return (
         <BasePopup open={open} onClose={onClose} title={tl("add_popup.title")}>
             <div className={styles.sectionList}>
-                {/* Thông tin */}
                 <BaseCollapsibleSection
                     title={tl("add_popup.info")}
                     expanded={infoExpanded}
@@ -145,455 +265,12 @@ export function AddLessonPlanPopup({ open, onClose, onCreated }: AddLessonPlanPo
                     </div>
                 </BaseCollapsibleSection>
 
-                {/* Warm-up */}
-                <BaseCollapsibleSection
-                    title={tl("col_warm_up")}
-                    expanded={warmUp.expanded}
-                    onToggle={() => setWarmUp((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderWarmUp}
-                    toggleAriaLabel={tl("col_warm_up")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_warm_up")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={warmUp.tab === ELessonPlan.LessonPlanType.TASK.code}
-                            className={`${styles.tabBtn} ${warmUp.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setWarmUp((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={warmUp.tab === "GAME"}
-                            className={`${styles.tabBtn} ${warmUp.tab === "GAME" ? styles.tabActive : ""}`}
-                            onClick={() => setWarmUp((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={warmUp.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={warmUp.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_warm_up") })}</div>
-                        </div>
-
-                        {warmUp.gameVisited ? (
-                            <div hidden={warmUp.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${warmUp.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setWarmUp((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${warmUp.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setWarmUp((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={warmUp.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={warmUpFlash} />
-                                </div>
-                                <div hidden={warmUp.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
-
-                {/* Vocabulary */}
-                <BaseCollapsibleSection
-                    title={tl("col_vocab")}
-                    expanded={vocab.expanded}
-                    onToggle={() => setVocab((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderVocab}
-                    toggleAriaLabel={tl("col_vocab")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_vocab")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={vocab.tab === "TASK"}
-                            className={`${styles.tabBtn} ${vocab.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setVocab((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={vocab.tab === "GAME"}
-                            className={`${styles.tabBtn} ${vocab.tab === "GAME" ? styles.tabActive : ""}`}
-                            onClick={() => setVocab((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={vocab.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={vocab.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_vocab") })}</div>
-                        </div>
-
-                        {vocab.gameVisited ? (
-                            <div hidden={vocab.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${vocab.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setVocab((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${vocab.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setVocab((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={vocab.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={vocabFlash} />
-                                </div>
-                                <div hidden={vocab.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
-
-                {/* Grammar */}
-                <BaseCollapsibleSection
-                    title={tl("col_grammar")}
-                    expanded={grammar.expanded}
-                    onToggle={() => setGrammar((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderGrammar}
-                    toggleAriaLabel={tl("col_grammar")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_grammar")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={grammar.tab === ELessonPlan.LessonPlanType.TASK.code}
-                            className={`${styles.tabBtn} ${grammar.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setGrammar((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={grammar.tab === ELessonPlan.LessonPlanType.GAME.code}
-                            className={`${styles.tabBtn} ${grammar.tab === ELessonPlan.LessonPlanType.GAME.code ? styles.tabActive : ""}`}
-                            onClick={() => setGrammar((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={grammar.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={grammar.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_grammar") })}</div>
-                        </div>
-
-                        {grammar.gameVisited ? (
-                            <div hidden={grammar.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${grammar.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setGrammar((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${grammar.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setGrammar((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={grammar.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={grammarFlash} />
-                                </div>
-                                <div hidden={grammar.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
-
-                {/* Listening */}
-                <BaseCollapsibleSection
-                    title={tl("col_listening")}
-                    expanded={listening.expanded}
-                    onToggle={() => setListening((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderListening}
-                    toggleAriaLabel={tl("col_listening")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_listening")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={listening.tab === ELessonPlan.LessonPlanType.TASK.code}
-                            className={`${styles.tabBtn} ${listening.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setListening((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={listening.tab === ELessonPlan.LessonPlanType.GAME.code}
-                            className={`${styles.tabBtn} ${listening.tab === ELessonPlan.LessonPlanType.GAME.code ? styles.tabActive : ""}`}
-                            onClick={() => setListening((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={listening.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={listening.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_listening") })}</div>
-                        </div>
-
-                        {listening.gameVisited ? (
-                            <div hidden={listening.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${listening.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setListening((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${listening.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setListening((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={listening.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={listeningFlash} />
-                                </div>
-                                <div hidden={listening.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
-
-                {/* Writing */}
-                <BaseCollapsibleSection
-                    title={tl("col_writing")}
-                    expanded={writing.expanded}
-                    onToggle={() => setWriting((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderWriting}
-                    toggleAriaLabel={tl("col_writing")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_writing")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={writing.tab === ELessonPlan.LessonPlanType.TASK.code}
-                            className={`${styles.tabBtn} ${writing.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setWriting((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={writing.tab === ELessonPlan.LessonPlanType.GAME.code}
-                            className={`${styles.tabBtn} ${writing.tab === ELessonPlan.LessonPlanType.GAME.code ? styles.tabActive : ""}`}
-                            onClick={() => setWriting((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={writing.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={writing.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_writing") })}</div>
-                        </div>
-
-                        {writing.gameVisited ? (
-                            <div hidden={writing.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${writing.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setWriting((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${writing.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setWriting((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={writing.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={writingFlash} />
-                                </div>
-                                <div hidden={writing.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
-
-                {/* Speaking */}
-                <BaseCollapsibleSection
-                    title={tl("col_speaking")}
-                    expanded={speaking.expanded}
-                    onToggle={() => setSpeaking((s) => ({ ...s, expanded: !s.expanded }))}
-                    headerClassName={styles.sectionHeaderSpeaking}
-                    toggleAriaLabel={tl("col_speaking")}
-                >
-                    <div className={styles.tabGroup} role="tablist" aria-label={tl("col_speaking")}>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={speaking.tab === ELessonPlan.LessonPlanType.TASK.code}
-                            className={`${styles.tabBtn} ${speaking.tab === ELessonPlan.LessonPlanType.TASK.code ? styles.tabActive : ""}`}
-                            onClick={() => setSpeaking((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code }))}
-                        >
-                            {tl("add_popup.tab_task")}
-                        </button>
-                        <button
-                            type="button"
-                            role="tab"
-                            aria-selected={speaking.tab === ELessonPlan.LessonPlanType.GAME.code}
-                            className={`${styles.tabBtn} ${speaking.tab === ELessonPlan.LessonPlanType.GAME.code ? styles.tabActive : ""}`}
-                            onClick={() => setSpeaking((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code }))}
-                        >
-                            {tl("add_popup.tab_game")}
-                        </button>
-                    </div>
-
-                    <div className={speaking.tab === "TASK" ? `${styles.contentPanel} ${styles.contentPanelTask}` : `${styles.contentPanel} ${styles.contentPanelGame}`}>
-                        <div className={styles.contentLabel}>{tl("add_popup.content_label")}</div>
-
-                        <div hidden={speaking.tab !== "TASK"}>
-                            <div className={styles.contentText}>{tl("add_popup.task_line", { section: tl("col_speaking") })}</div>
-                        </div>
-
-                        {speaking.gameVisited ? (
-                            <div hidden={speaking.tab !== "GAME"}>
-                                <div className={styles.gameTypeGroup}>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${speaking.gameType === EGame.GameType.FLASHCARD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setSpeaking((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.FLASHCARD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.FLASHCARD.name}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`${styles.gameTypeBtn} ${speaking.gameType === EGame.GameType.CROSSWORD.code ? styles.gameTypeBtnActive : ""}`}
-                                        onClick={() =>
-                                            setSpeaking((s) => ({
-                                                ...s,
-                                                gameType: EGame.GameType.CROSSWORD.code,
-                                            }))
-                                        }
-                                    >
-                                        {EGame.GameType.CROSSWORD.name}
-                                    </button>
-                                </div>
-                                <div hidden={speaking.gameType !== EGame.GameType.FLASHCARD.code}>
-                                    <FlashcardModal flashcard={speakingFlash} />
-                                </div>
-                                <div hidden={speaking.gameType !== EGame.GameType.CROSSWORD.code}>
-                                    <div className={styles.contentText}>{tl("add_popup.crossword_placeholder")}</div>
-                                </div>
-                            </div>
-                        ) : null}
-                    </div>
-                </BaseCollapsibleSection>
+                {renderSection(tl("col_warm_up"), warmUp, setWarmUp, warmUpFlash, styles.sectionHeaderWarmUp)}
+                {renderSection(tl("col_vocab"), vocab, setVocab, vocabFlash, styles.sectionHeaderVocab)}
+                {renderSection(tl("col_grammar"), grammar, setGrammar, grammarFlash, styles.sectionHeaderGrammar)}
+                {renderSection(tl("col_listening"), listening, setListening, listeningFlash, styles.sectionHeaderListening)}
+                {renderSection(tl("col_writing"), writing, setWriting, writingFlash, styles.sectionHeaderWriting)}
+                {renderSection(tl("col_speaking"), speaking, setSpeaking, speakingFlash, styles.sectionHeaderSpeaking)}
             </div>
 
             <div className={styles.actions}>
