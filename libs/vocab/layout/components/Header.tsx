@@ -87,12 +87,12 @@ export function Header() {
         <div className="w-px h-6 bg-slate-200 dark:bg-white/10 mx-1" />
 
         {/* Language switcher VIE / ENG */}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-white/5 rounded-xl p-1 border border-slate-200 dark:border-white/5">
+        <div className="flex items-center gap-1 bg-slate-100 dark:bg-white/5 rounded-lg p-1">
           {(['vi', 'en'] as const).map((lng) => (
             <button
               key={lng}
               onClick={() => switchLocale(lng)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-wider transition-all duration-200 cursor-pointer ${
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider transition-all duration-200 cursor-pointer ${
                 currentLocale === lng
                   ? 'bg-blue-500 text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
@@ -109,7 +109,7 @@ export function Header() {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center group cursor-pointer"
+          className="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 rounded-lg transition-all flex items-center justify-center group cursor-pointer"
           title={isDarkMode === 'dark' ? t('header.switch_to_light') : t('header.switch_to_dark')}
         >
           {isDarkMode === 'dark' ? (
@@ -123,7 +123,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setIsProfileMenuOpen((v) => !v)}
-            className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center gap-1 cursor-pointer"
+            className="p-2 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer"
             title="Account"
           >
             <User size={17} />

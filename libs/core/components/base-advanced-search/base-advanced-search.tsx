@@ -8,6 +8,7 @@ export interface AdvancedSearchField {
   key: string;
   label: string;
   placeholder?: string;
+  width?: string | number;
 }
 
 interface BaseAdvancedSearchProps {
@@ -45,15 +46,15 @@ export function BaseAdvancedSearch({
         width: '100%',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 10,
+        gap: 12,
       }}
     >
       {fields.map((field) => (
         <label
           key={field.key}
-          style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, maxWidth: field.width }}
         >
-          <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>
+          <span style={{ fontSize: 12, color: '#1e293b', fontWeight: 700 }}>
             {field.label}
           </span>
           <input
@@ -65,8 +66,8 @@ export function BaseAdvancedSearch({
               width: '100%',
               padding: '8px 10px',
               fontSize: 13,
-              border: '1px solid #e5e7eb',
-              borderRadius: 8,
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
               outline: 'none',
               background: 'transparent',
               color: 'inherit',
@@ -88,9 +89,9 @@ export function BaseAdvancedSearch({
     <div
       style={{
         width: '100%',
-        border: '1px solid #e5e7eb',
-        borderRadius: 10,
-        padding: 10,
+        border: '1px solid #d1d5db',
+        borderRadius: 8,
+        padding: '8px 16px 8px 16px',
       }}
     >
       <div
@@ -98,19 +99,18 @@ export function BaseAdvancedSearch({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 8,
           marginBottom: isOpen ? 10 : 0,
         }}
       >
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#334155' }}>{panelTitle}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>{panelTitle}</span>
         <button
           type="button"
           onClick={() => setIsOpen((v) => !v)}
           style={{
             height: 36,
-            padding: '0 12px',
-            border: '1px solid #e5e7eb',
-            borderRadius: 8,
+            // padding: '0 12px',
+            // border: '1px solid #d1d5db',
+            borderRadius: 6,
             background: 'transparent',
             color: 'inherit',
             cursor: 'pointer',
@@ -135,11 +135,11 @@ export function BaseAdvancedSearch({
                 height: 36,
                 padding: '0 12px',
                 border: 'none',
-                borderRadius: 8,
+                borderRadius: 6,
                 background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
                 color: '#fff',
                 cursor: 'pointer',
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 600,
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -157,12 +157,12 @@ export function BaseAdvancedSearch({
                 style={{
                   height: 36,
                   padding: '0 12px',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: 8,
+                  border: '1px solid #d1d5db',
+                  borderRadius: 6,
                   background: 'transparent',
                   color: 'inherit',
                   cursor: 'pointer',
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 600,
                 }}
               >

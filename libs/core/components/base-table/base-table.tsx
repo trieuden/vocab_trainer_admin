@@ -241,7 +241,7 @@ function BaseTableInner<T = Record<string, unknown>>(
             title={t('show_hide_columns_title')}
           >
             <Settings2 size={15} />
-            <span>{t('columns')}</span>
+            {/* <span>{t('columns')}</span> */}
           </button>
 
           {pickerOpen && (

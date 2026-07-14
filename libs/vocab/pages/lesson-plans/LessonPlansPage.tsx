@@ -197,11 +197,13 @@ export const LessonPlansPage = () => {
               key: 'name',
               label: tl('advanced_search.teacher'),
               placeholder: tl('advanced_search.teacher_placeholder'),
+              width: 350,
             },
             {
               key: 'level',
               label: tl('advanced_search.level'),
               placeholder: tl('advanced_search.level_placeholder'),
+              width: 350,
             },
           ]}
           values={filters as Record<string, string>}
