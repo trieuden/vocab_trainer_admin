@@ -32,7 +32,12 @@
     "open_audio": "Mở audio",
     "task": "Bài tập",
     "game": "Trò chơi",
-    "game_prefix": "Trò chơi -"
+    "game_prefix": "Trò chơi -",
+    "slideshow": "Trình chiếu"
+  },
+  "slideshow": {
+    "title": "Trình chiếu giáo án",
+    "no_content": "Không có nội dung để trình chiếu"
   },
   "flashcard": {
     "open_audio": "Mở audio",

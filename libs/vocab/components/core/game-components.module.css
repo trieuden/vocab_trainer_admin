@@ -1,0 +1,459 @@
+/* ── Flashcard Game ── */
+.flashcardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+.flashcardProgress {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.flashcardProgressBar {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.flashcardProgressFill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.flashcardCard {
+  width: 100%;
+  max-width: 500px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 30px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+:global(.dark) .flashcardCard {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.flashcardModeLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+:global(.dark) .flashcardModeLabel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #64748b;
+}
+
+.flashcardWord {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+:global(.dark) .flashcardWord {
+  color: #f1f5f9;
+}
+
+.flashcardDefinition {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+:global(.dark) .flashcardDefinition {
+  color: #cbd5e1;
+}
+
+.flashcardAudioBtn {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.flashcardAudioBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+:global(.dark) .flashcardAudioBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+.flashcardInput {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.flashcardInput:focus {
+  border-color: #2563eb;
+}
+
+.flashcardInputCorrect {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.flashcardInputWrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+:global(.dark) .flashcardInput {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+}
+
+.flashcardInputResult {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.flashcardCorrect {
+  color: #16a34a;
+}
+
+.flashcardWrong {
+  color: #dc2626;
+}
+
+/* ── Options (chọn definition) ── */
+.flashcardOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.flashcardOption {
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.flashcardOption:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+:global(.dark) .flashcardOption {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+:global(.dark) .flashcardOption:hover {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.flashcardOptionCorrect {
+  border-color: #16a34a;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.flashcardOptionWrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* ── Buttons ── */
+.flashcardActions {
+  display: flex;
+  gap: 10px;
+}
+
+.flashcardBtn {
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.flashcardBtnPrimary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.flashcardBtnPrimary:hover {
+  background: #1d4ed8;
+}
+
+.flashcardBtnSecondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.flashcardBtnSecondary:hover {
+  background: #e2e8f0;
+}
+
+:global(.dark) .flashcardBtnSecondary {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+/* ── Multiple Choice Quiz ── */
+.quizContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+.quizProgress {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.quizProgressBar {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.quizProgressFill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.quizCard {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+:global(.dark) .quizCard {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.quizQuestionNumber {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #2563eb;
+}
+
+.quizQuestionText {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+:global(.dark) .quizQuestionText {
+  color: #f1f5f9;
+}
+
+.quizOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quizOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 15px;
+  color: #334155;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.quizOption:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+:global(.dark) .quizOption {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+}
+
+:global(.dark) .quizOption:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.quizOptionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-weight: 700;
+  font-size: 13px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+:global(.dark) .quizOptionLabel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.quizOptionText {
+  flex: 1;
+}
+
+.quizOptionCorrect {
+  border-color: #16a34a;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.quizOptionCorrect .quizOptionLabel {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.quizOptionWrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.quizOptionWrong .quizOptionLabel {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.quizOptionDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quizResult {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.quizResultCorrect {
+  color: #16a34a;
+}
+
+.quizResultWrong {
+  color: #dc2626;
+}
+
+/* ── Score Summary ── */
+.scoreSummary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.scoreTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+:global(.dark) .scoreTitle {
+  color: #f1f5f9;
+}
+
+.scoreValue {
+  font-size: 48px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.scoreLabel {
+  font-size: 14px;
+  color: #64748b;
+}

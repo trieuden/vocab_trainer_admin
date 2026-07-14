@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   gap: 10px;
   padding: 12px 2px 4px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: BlinkMacSystemFont, system-ui, sans-serif;
   font-size: 13px;
   color: #6b7280;
 }

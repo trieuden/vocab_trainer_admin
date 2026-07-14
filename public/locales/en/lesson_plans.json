@@ -32,7 +32,12 @@
     "open_audio": "Open audio",
     "task": "Task",
     "game": "Game",
-    "game_prefix": "Game -"
+    "game_prefix": "Game -",
+    "slideshow": "Slideshow"
+  },
+  "slideshow": {
+    "title": "Lesson Plan Slideshow",
+    "no_content": "No content to present"
   },
   "flashcard": {
     "open_audio": "Open audio",

@@ -46,6 +46,6 @@
 .labelText {
   font-size: 13px;
   color: #374151;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: BlinkMacSystemFont, system-ui, sans-serif;
 }
 :global(.dark) .labelText { color: #cbd5e1; }

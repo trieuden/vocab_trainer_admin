@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { BaseCollapsibleSection, BaseLoading, BasePopup } from '@/core/components';
 import { EGame, ELessonPlan } from '@/core/enums';
 import { useLessonPlanDetail } from '../../hooks/lesson-plan-detail';
+import { LessonPlanSlideshow } from '../slideshow/lesson-plan-slideshow';
 import styles from './lesson-plan-detail.module.css';
 
 interface LessonPlanDetailProps {
@@ -150,6 +151,7 @@ export function LessonPlanDetail({ open, id, onClose }: LessonPlanDetailProps) {
     writing: true,
     speaking: true,
   });
+  const [slideshowOpen, setSlideshowOpen] = useState(false);
   const toggle = (key: keyof typeof expanded) => setExpanded((p) => ({ ...p, [key]: !p[key] }));
 
   const SECTIONS = [
@@ -189,10 +191,17 @@ export function LessonPlanDetail({ open, id, onClose }: LessonPlanDetailProps) {
       )}
 
       <div className={styles.actions}>
+        <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => setSlideshowOpen(true)}>
+          {tl('detail.slideshow')}
+        </button>
         <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={onClose}>
           {tc('cancel')}
         </button>
       </div>
+
+      {slideshowOpen && data && (
+        <LessonPlanSlideshow data={data} onClose={() => setSlideshowOpen(false)} />
+      )}
     </BasePopup>
   );
 }

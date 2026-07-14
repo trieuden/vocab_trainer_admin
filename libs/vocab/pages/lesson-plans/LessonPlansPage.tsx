@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ClipboardList, Gamepad2 } from 'lucide-react';
+import { ClipboardList, Gamepad2, Play } from 'lucide-react';
 import {
   BaseAdvancedSearch,
   BaseConfirmDialog,
@@ -14,7 +14,9 @@ import {
   BasePageHeader,
   BaseToolbar,
 } from '../../../core/components';
+import { getLessonPlanDetail } from '@/core/api/lesson_plans';
 import { AddLessonPlanPopup, LessonPlanDetail } from './components';
+import { LessonPlanSlideshow } from './components/slideshow/lesson-plan-slideshow';
 import { useLessonPlans } from './hooks';
 import { enumData } from '@/core/enums/enumData';
 import { useIsMounted } from '@/core/hooks/useIsMounted';
@@ -59,6 +61,8 @@ export const LessonPlansPage = () => {
   const isMounted = useIsMounted();
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [slideshowData, setSlideshowData] = useState<any | null>(null);
+  const [slideshowLoading, setSlideshowLoading] = useState(false);
   const [filters, setFilters] = useState<Partial<GetLessonPlansDto>>({
     pageIndex: PAGE_INDEX,
     pageSize: PAGE_SIZE,
@@ -129,20 +133,52 @@ export const LessonPlansPage = () => {
     {
       key: 'actions',
       title: tl('col_actions'),
-      width: 120,
+      width: 150,
       hideable: false,
       pinned: 'right',
       render: (row) => (
-        <BaseActionCell
-          onView={() => setDetailId(row.id)}
-          onEdit={() => {}}
-          onDownload={() => {}}
-          labels={{
-            view: tl('action_view'),
-            edit: tl('action_edit'),
-            download: tl('action_download'),
-          }}
-        />
+        <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <BaseActionCell
+            onView={() => setDetailId(row.id)}
+            onEdit={() => {}}
+            onDownload={() => {}}
+            labels={{
+              view: tl('action_view'),
+              edit: tl('action_edit'),
+              download: tl('action_download'),
+            }}
+          />
+          <button
+            title={tl('detail.slideshow')}
+            onClick={async () => {
+              setSlideshowLoading(true);
+              try {
+                const detail = await getLessonPlanDetail(row.id);
+                setSlideshowData(detail);
+              } catch {
+                // ignore
+              } finally {
+                setSlideshowLoading(false);
+              }
+            }}
+            disabled={slideshowLoading}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 28,
+              height: 28,
+              borderRadius: 6,
+              border: '1px solid #e2e8f0',
+              background: '#f8fafc',
+              cursor: slideshowLoading ? 'not-allowed' : 'pointer',
+              color: '#2563eb',
+              opacity: slideshowLoading ? 0.5 : 1,
+            }}
+          >
+            <Play size={12} />
+          </button>
+        </div>
       ),
     },
   ];
@@ -208,6 +244,13 @@ export const LessonPlansPage = () => {
         open={detailId !== null}
         onClose={() => setDetailId(null)}
       />
+
+      {slideshowData && (
+        <LessonPlanSlideshow
+          data={slideshowData}
+          onClose={() => setSlideshowData(null)}
+        />
+      )}
     </div>
   );
 };
