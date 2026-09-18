@@ -73,7 +73,7 @@ const searchFn = (item: MiniGame, q: string) => {
   );
 };
 
-export function MiniGamePage() {
+export const MiniGamePage = () => {
   const { t } = useTranslation('common');
   const { t: tm } = useTranslation('minigame');
   const isMounted = useIsMounted();

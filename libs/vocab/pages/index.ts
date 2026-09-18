@@ -1,2 +1,2 @@
-export { StartPage } from './StartPage';
-export { LoginForm } from './login/login';
+export { StartPage } from './dashboard';
+export { LoginForm } from './login';

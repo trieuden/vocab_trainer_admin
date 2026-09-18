@@ -13,9 +13,9 @@ import {
   BaseAddButton,
   BasePageHeader,
   BaseToolbar,
-} from '../../../core/components';
+} from '@/core/components';
 import { Phone } from 'lucide-react';
-import { useUsers } from './hooks';
+import { useUsers } from '../hooks';
 import { enumData } from '@/core/enums/enumData';
 import { useIsMounted } from '@/core/hooks/useIsMounted';
 import type { GetUsersDto } from '@/core/api/users/dtos';

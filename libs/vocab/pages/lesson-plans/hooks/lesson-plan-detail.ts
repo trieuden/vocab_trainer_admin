@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getLessonPlanDetail } from "@/core/api/lesson_plans";
 
-export function useLessonPlanDetail(id: string | null) {
+export const useLessonPlanDetail = (id: string | null) => {
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -4,7 +4,7 @@ import { enumData } from '@/core/enums/enumData';
 import type { GetUsersDto } from '@/core/api/users/dtos';
 
 
-export function useUsers(body?: GetUsersDto) {
+export const useUsers = (body?: GetUsersDto) => {
   const [data, setData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);

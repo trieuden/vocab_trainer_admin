@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useLogin } from './hooks';
 
-export function LoginForm() {
+export const LoginForm = () => {
   const { t } = useTranslation('login');
   const { handleSubmit, loading } = useLogin();
   const [username, setUsername] = useState('admin');

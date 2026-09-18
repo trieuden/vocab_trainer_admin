@@ -3,7 +3,7 @@ import { getLessonPlans } from '@/core/api/lesson_plans';
 import { enumData } from '@/core/enums/enumData';
 import type { GetLessonPlansDto } from '@/core/api/lesson_plans/dtos';
 
-export function useLessonPlans(body?: GetLessonPlansDto) {
+export const useLessonPlans = (body?: GetLessonPlansDto) => {
   const [data, setData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);

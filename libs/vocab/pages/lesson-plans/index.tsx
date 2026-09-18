@@ -15,8 +15,7 @@ import {
   BaseToolbar,
 } from '../../../core/components';
 import { getLessonPlanDetail } from '@/core/api/lesson_plans';
-import { AddLessonPlanPopup, LessonPlanDetail } from './components';
-import { LessonPlanSlideshow } from './components/slideshow/lesson-plan-slideshow';
+import { AddLessonPlanPopup, LessonPlanDetail, LessonPlanSlideshow } from './components';
 import { useLessonPlans } from './hooks';
 import { enumData } from '@/core/enums/enumData';
 import { useIsMounted } from '@/core/hooks/useIsMounted';
@@ -24,36 +23,6 @@ import type { GetLessonPlansDto } from '@/core/api/lesson_plans/dtos';
 
 const { PAGE_SIZE, PAGE_INDEX } = enumData.PageRequest;
 
-function TypeIcon({ type }: { type?: string }) {
-  const t = String(type || '').toUpperCase();
-  if (t === 'GAME') {
-    return (
-      <span title="GAME" style={{ display: 'inline-flex', flexShrink: 0 }}>
-        <Gamepad2 size={14} style={{ color: '#8b5cf6' }} />
-      </span>
-    );
-  }
-  if (t === 'TASK') {
-    return (
-      <span title="TASK" style={{ display: 'inline-flex', flexShrink: 0 }}>
-        <ClipboardList size={14} style={{ color: '#059669' }} />
-      </span>
-    );
-  }
-  return null;
-}
-
-function SegmentCell({ name, type, block }: { name?: string; type?: string; block?: any }) {
-  const displayName = name || block?.name || block?.type || '—';
-  return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, maxWidth: 200 }}>
-      <TypeIcon type={type} />
-      <span style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {displayName}
-      </span>
-    </span>
-  );
-}
 
 export const LessonPlansPage = () => {
   const { t } = useTranslation('common');
@@ -98,37 +67,37 @@ export const LessonPlansPage = () => {
       key: 'warmUp',
       title: tl('col_warm_up'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.warmUp} type={row?.warmUpType} />,
+      render: (row) => row.warmUp?.name || '—',
     },
     {
       key: 'vocab',
       title: tl('col_vocab'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.vocab} type={row?.vocabType} />,
+      render: (row) => row.vocab?.name || '—',
     },
     {
       key: 'grammar',
       title: tl('col_grammar'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.grammar} type={row?.grammarType} />,
+      render: (row) => row.grammar?.name || '—',
     },
     {
       key: 'listening',
       title: tl('col_listening'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.listening} type={row?.listeningType} />,
+      render: (row) => row.listening?.name || '—',
     },
     {
       key: 'writing',
       title: tl('col_writing'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.writing} type={row?.writingType} />,
+      render: (row) => row.writing?.name || '—',
     },
     {
       key: 'speaking',
       title: tl('col_speaking'),
       width: 200,
-      render: (row) => <SegmentCell block={row?.speaking} type={row?.speakingType} />,
+      render: (row) => row.speaking?.name || '—',
     },
     {
       key: 'actions',

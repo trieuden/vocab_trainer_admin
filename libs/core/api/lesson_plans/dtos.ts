@@ -47,3 +47,52 @@ export class CreateLessonPlanDto {
 
   [key: string]: any;
 }
+
+export interface QuestionState extends MultipleChoiceQuestionDto {
+    generating?: boolean;
+}
+
+export interface SegmentState {
+    tab: string;
+    gameType: string;
+    gameVisited: boolean;
+    taskType: string;
+    questions: QuestionState[];
+}
+
+export type TabKey = 'info' | 'warmUp' | 'vocab' | 'grammar' | 'listening' | 'writing' | 'speaking';
+
+export interface LessonPlanWordDto {
+    id?: string;
+    words: string;
+    phoneticText?: string;
+    definition?: string;
+    audio?: string;
+}
+
+export interface LessonPlanAnswerDto {
+    id?: string;
+    answer: string;
+    isRight: boolean;
+}
+
+export interface LessonPlanQuestionDto {
+    id?: string;
+    question: string;
+    answers: LessonPlanAnswerDto[];
+}
+
+export interface LessonPlanSectionBlock {
+    id?: string;
+    name?: string;
+    type?: string;
+    words?: LessonPlanWordDto[];
+    questions?: LessonPlanQuestionDto[];
+}
+
+export interface LessonPlanSlideSection {
+    key: string;
+    label: string;
+    type: "flashcard" | "quiz" | "skip";
+    data: LessonPlanSectionBlock;
+}
