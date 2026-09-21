@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BaseCollapsibleSection, BaseLoading, BasePopup } from '@/core/components';
+import { BaseLoading, BasePopup } from '@/core/components';
 import { EGame, ELessonPlan } from '@/core/enums';
 import { useLessonPlanDetail } from '../hooks/lesson-plan-detail';
 import { LessonPlanSlideshow } from './lesson-plan-slideshow';
+import { ClipboardList, BookOpen, List, Headphones, Edit3, MessageCircle, Info } from 'lucide-react';
+import { useAppTheme } from '@/vocab/providers';
 
 const gameTypeMap = {
   [EGame.GameType.CROSSWORD.code]: EGame.GameType.CROSSWORD.name,
@@ -105,33 +107,29 @@ const QuestionsTable = ({ block }: { block: any }) => {
   );
 };
 
-interface SegmentSectionProps {
-  title: string;
-  headerClassName: string;
-  sectionType: string | null;
-  block: any;
-  expanded: boolean;
-  onToggle: () => void;
-  toggleAriaLabel: string;
-}
-
-const SegmentSection = ({ title, headerClassName, sectionType, block, expanded, onToggle, toggleAriaLabel }: SegmentSectionProps) => {
+const SegmentDetail = ({ title, sectionType, block }: { title: string; sectionType: string | null; block: any }) => {
   const { t: tl } = useTranslation('lesson_plans');
 
   const isTask = sectionType === ELessonPlan.LessonPlanType.TASK.code;
   const isGame = sectionType === ELessonPlan.LessonPlanType.GAME.code;
   const hasQuestions = block?.questions?.length > 0;
 
+  if (!isTask && !isGame) {
+    return <div className="mt-2 text-[13px] text-slate-400 italic">{tl('detail.no_data', 'Không có dữ liệu cho phần này')}</div>;
+  }
+
   return (
-    <BaseCollapsibleSection title={title} expanded={expanded} onToggle={onToggle} headerClassName={headerClassName} toggleAriaLabel={toggleAriaLabel}>
+    <div className="flex flex-col gap-4">
+      <div className="text-[16px] font-bold text-slate-800 dark:text-slate-100">{title}</div>
+      
       {/* Nội dung TASK */}
-      <div className="mt-3 w-full border border-slate-200 rounded-[10px] bg-slate-50 px-3.5 py-3 dark:border-white/10 dark:bg-white/5" hidden={!isTask}>
+      <div className="w-full border border-slate-200 rounded-[10px] bg-slate-50 px-3.5 py-3 dark:border-white/10 dark:bg-white/5" hidden={!isTask}>
         <div className="text-[12px] uppercase tracking-wide font-bold text-slate-500 dark:text-slate-400">{tl('detail.task')}</div>
         {hasQuestions ? <QuestionsTable block={block} /> : <div className="mt-2 text-[13px] text-slate-800 dark:text-slate-200">{block?.name ?? tl('add_popup.task_line', { section: title })}</div>}
       </div>
 
       {/* Nội dung GAME */}
-      <div className="mt-3 w-full border border-slate-200 rounded-[10px] bg-slate-50 px-3.5 py-3 dark:border-white/10 dark:bg-white/5" hidden={!isGame}>
+      <div className="w-full border border-slate-200 rounded-[10px] bg-slate-50 px-3.5 py-3 dark:border-white/10 dark:bg-white/5" hidden={!isGame}>
         <div className="text-[12px] uppercase tracking-wide font-bold text-slate-500 dark:text-slate-400">{tl('detail.game')}</div>
 
         <div className="mt-1.5 py-2 border-b border-dashed border-slate-200 flex items-center gap-2 dark:border-white/10">
@@ -140,7 +138,7 @@ const SegmentSection = ({ title, headerClassName, sectionType, block, expanded, 
 
         <WordsTable block={block} />
       </div>
-    </BaseCollapsibleSection>
+    </div>
   );
 };
 
@@ -158,25 +156,19 @@ export const LessonPlanDetail = ({ open, id, onClose }: LessonPlanDetailProps) =
   const { t: tl } = useTranslation('lesson_plans');
   const { t: tc } = useTranslation('common');
   const { data, loading, error } = useLessonPlanDetail(open ? id : null);
+  const theme = useAppTheme();
 
-  const [expanded, setExpanded] = useState({
-    warmUp: true,
-    vocab: true,
-    grammar: true,
-    listening: true,
-    writing: true,
-    speaking: true,
-  });
+  const [activeTab, setActiveTab] = useState<string>('info');
   const [slideshowOpen, setSlideshowOpen] = useState(false);
-  const toggle = (key: keyof typeof expanded) => setExpanded((p) => ({ ...p, [key]: !p[key] }));
 
-  const SECTIONS = [
-    { key: 'warmUp' as const, labelKey: 'col_warm_up', headerCls: 'bg-orange-50 dark:bg-slate-900' },
-    { key: 'vocab' as const, labelKey: 'col_vocab', headerCls: 'bg-cyan-50 dark:bg-slate-900' },
-    { key: 'grammar' as const, labelKey: 'col_grammar', headerCls: 'bg-violet-50 dark:bg-slate-900' },
-    { key: 'listening' as const, labelKey: 'col_listening', headerCls: 'bg-blue-50 dark:bg-slate-900' },
-    { key: 'writing' as const, labelKey: 'col_writing', headerCls: 'bg-green-50 dark:bg-slate-900' },
-    { key: 'speaking' as const, labelKey: 'col_speaking', headerCls: 'bg-pink-50 dark:bg-slate-900' },
+  const tabs = [
+    { key: 'info', label: tl('add_popup.info'), icon: <Info size={16} /> },
+    { key: 'warmUp', label: tl('col_warm_up'), icon: <ClipboardList size={16} /> },
+    { key: 'vocab', label: tl('col_vocab'), icon: <BookOpen size={16} /> },
+    { key: 'grammar', label: tl('col_grammar'), icon: <List size={16} /> },
+    { key: 'listening', label: tl('col_listening'), icon: <Headphones size={16} /> },
+    { key: 'writing', label: tl('col_writing'), icon: <Edit3 size={16} /> },
+    { key: 'speaking', label: tl('col_speaking'), icon: <MessageCircle size={16} /> },
   ];
 
   return (
@@ -190,19 +182,82 @@ export const LessonPlanDetail = ({ open, id, onClose }: LessonPlanDetailProps) =
       {error && !loading && <div className="flex items-center justify-center min-h-[120px] text-[14px] text-slate-500 text-red-600 dark:text-red-400">{error}</div>}
 
       {data && !loading && (
-        <div className="flex flex-col gap-3">
-          {SECTIONS.map(({ key, labelKey, headerCls }) => (
-            <SegmentSection
-              key={key}
-              title={tl(labelKey)}
-              headerClassName={headerCls}
-              sectionType={data[`${key}Type`] ?? null}
-              block={data[key] ?? null}
-              expanded={expanded[key]}
-              onToggle={() => toggle(key)}
-              toggleAriaLabel={tl(labelKey)}
-            />
-          ))}
+        <div className="flex gap-5 min-h-[500px]" style={{ backgroundColor: theme.background.primary, color: theme.text.primary }}>
+          <div className="w-[220px] shrink-0 flex flex-col gap-1.5 border-r pr-4" style={{ borderColor: theme.background.tertiary }}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                className="w-full flex items-center gap-3 px-3.5 py-2.5 border-0 rounded-lg cursor-pointer text-left text-[14px] font-semibold transition-all duration-200"
+                style={{
+                  backgroundColor: activeTab === tab.key ? theme.primary.main : 'transparent',
+                  color: activeTab === tab.key ? theme.primary.text : theme.text.secondary,
+                }}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1 flex flex-col min-w-0 pr-1">
+            {activeTab === 'info' ? (
+              <div>
+                <div className="flex flex-row gap-4 items-end">
+                  <div className="flex flex-col gap-1 flex-1">
+                    <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                      {tl('add_popup.name')}
+                    </label>
+                    <div
+                      className="flex-1 px-2.5 py-1.5 rounded-lg border text-[13px]"
+                      style={{
+                        backgroundColor: theme.background.secondary,
+                        color: theme.text.primary,
+                        borderColor: theme.background.tertiary,
+                        minHeight: 34,
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {data.name || '—'}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 flex-1">
+                    <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                      {tl('add_popup.level')}
+                    </label>
+                    <div
+                      className="flex-1 px-2.5 py-1.5 rounded-lg border text-[13px]"
+                      style={{
+                        backgroundColor: theme.background.secondary,
+                        color: theme.text.primary,
+                        borderColor: theme.background.tertiary,
+                        minHeight: 34,
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {data.level || '—'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 min-w-0">
+                {tabs.filter(t => t.key !== 'info').map(({ key, label }) => {
+                  if (activeTab !== key) return null;
+                  return (
+                    <SegmentDetail
+                      key={key}
+                      title={label}
+                      sectionType={data[`${key}Type`] ?? null}
+                      block={data[key] ?? null}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

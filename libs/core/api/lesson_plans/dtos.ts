@@ -53,10 +53,10 @@ export interface QuestionState extends MultipleChoiceQuestionDto {
 }
 
 export interface SegmentState {
-    tab: string;
-    gameType: string;
+    tab: LessonPlanType;
+    gameType: GameType;
     gameVisited: boolean;
-    taskType: string;
+    taskType: TaskQuestionType;
     questions: QuestionState[];
 }
 

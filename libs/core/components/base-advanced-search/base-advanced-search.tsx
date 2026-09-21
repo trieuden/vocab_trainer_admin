@@ -95,83 +95,104 @@ export function BaseAdvancedSearch({
       }}
     >
       <div
+        onClick={() => setIsOpen((v) => !v)}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: isOpen ? 10 : 0,
+          marginBottom: isOpen ? 12 : 0,
+          paddingBottom: isOpen ? 8 : 0,
+          borderBottom: `1px solid ${isOpen ? '#e2e8f0' : 'transparent'}`,
+          cursor: 'pointer',
+          userSelect: 'none',
+          transition: 'all 300ms ease-in-out',
         }}
       >
         <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>{panelTitle}</span>
         <button
           type="button"
-          onClick={() => setIsOpen((v) => !v)}
           style={{
             height: 36,
-            // padding: '0 12px',
-            // border: '1px solid #d1d5db',
             borderRadius: 6,
             background: 'transparent',
+            border: 'none',
             color: 'inherit',
             cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
           aria-label={isOpen ? 'Collapse advanced search' : 'Expand advanced search'}
         >
-          {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <ChevronDown
+            size={16}
+            style={{
+              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 300ms ease-in-out',
+            }}
+          />
         </button>
       </div>
 
-      {isOpen ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {form}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateRows: isOpen ? '1fr' : '0fr',
+          opacity: isOpen ? 1 : 0,
+          transition: 'all 300ms ease-in-out',
+          pointerEvents: isOpen ? 'auto' : 'none',
+        }}
+      >
+        <div style={{ overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {form}
 
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-            <button
-              type="button"
-              onClick={onSearch}
-              style={{
-                height: 36,
-                padding: '0 12px',
-                border: 'none',
-                borderRadius: 6,
-                background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: 12,
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-              }}
-            >
-              <Search size={14} />
-              {searchLabel ?? t('search')}
-            </button>
-
-            {onReset && (
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 10 }}>
               <button
                 type="button"
-                onClick={onReset}
+                onClick={onSearch}
                 style={{
-                  height: 36,
+                  height: 32,
                   padding: '0 12px',
-                  border: '1px solid #d1d5db',
+                  border: 'none',
                   borderRadius: 6,
-                  background: 'transparent',
-                  color: 'inherit',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
+                  color: '#fff',
                   cursor: 'pointer',
                   fontSize: 12,
                   fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
                 }}
               >
-                {resetLabel ?? t('cancel')}
+                <Search size={14} />
+                {searchLabel ?? t('search')}
               </button>
-            )}
+
+              {onReset && (
+                <button
+                  type="button"
+                  onClick={onReset}
+                  style={{
+                    height: 32,
+                    padding: '0 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: 6,
+                    background: 'transparent',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
+                >
+                  {resetLabel ?? t('cancel')}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }

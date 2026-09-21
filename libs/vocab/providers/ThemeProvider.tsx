@@ -4,12 +4,66 @@ import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/st
 import { CssBaseline } from '@mui/material';
 import Cookies from 'js-cookie';
 
+export type ThemeColors = {
+  primary: {
+    main: string;
+    text: string;
+  };
+  background: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+};
+
+export const lightThemeColors: ThemeColors = {
+  primary: {
+    main: '#2563eb', // blue-600
+    text: '#ffffff',
+  },
+  background: {
+    primary: '#ffffff',
+    secondary: '#f8fafc',
+    tertiary: '#e2e8f0',
+  },
+  text: {
+    primary: '#0f172a',
+    secondary: '#475569',
+    tertiary: '#94a3b8',
+  },
+};
+
+export const darkThemeColors: ThemeColors = {
+  primary: {
+    main: '#3b82f6', // blue-500 for better visibility in dark mode
+    text: '#ffffff',
+  },
+  background: {
+    primary: '#020617',
+    secondary: '#0f172a',
+    tertiary: '#1e293b',
+  },
+  text: {
+    primary: '#f8fafc',
+    secondary: '#94a3b8',
+    tertiary: '#64748b',
+  },
+};
+
 const ThemeContext = createContext({
   isDarkMode: 'dark',
   toggleTheme: () => {},
+  theme: darkThemeColors,
 });
 
 export const useThemeMode = () => useContext(ThemeContext);
+
+export const useAppTheme = () => useContext(ThemeContext).theme;
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState('dark');
@@ -36,19 +90,21 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const currentThemeColors = isDarkMode === 'dark' ? darkThemeColors : lightThemeColors;
+
   const theme = createTheme({
     palette: {
       mode: isDarkMode === 'dark' ? 'dark' : 'light',
       primary: {
-        main: '#3b82f6', // blue-500
+        main: currentThemeColors.primary.main,
       },
       background: {
-        default: isDarkMode === 'dark' ? '#020617' : '#f8fafc',
-        paper: isDarkMode === 'dark' ? '#0f172a' : '#ffffff',
+        default: currentThemeColors.background.primary,
+        paper: currentThemeColors.background.secondary,
       },
       text: {
-        primary: isDarkMode === 'dark' ? '#f8fafc' : '#0f172a',
-        secondary: isDarkMode === 'dark' ? '#94a3b8' : '#64748b',
+        primary: currentThemeColors.text.primary,
+        secondary: currentThemeColors.text.secondary,
       },
       divider: isDarkMode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
     },
@@ -68,7 +124,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme, theme: currentThemeColors }}>
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         {children}

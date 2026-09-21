@@ -5,6 +5,7 @@ import { EGame, ELessonPlan } from '@/core/enums';
 import { generateWrongAnswers } from '@/core/api/lesson_plans';
 import type { QuestionState, SegmentState } from '@/core/api/lesson_plans/dtos';
 import { FlashcardModal } from '../flashcard-modal';
+import { useAppTheme } from '@/vocab/providers';
 
 interface SectionFormProps {
   currentState: SegmentState;
@@ -16,6 +17,7 @@ interface SectionFormProps {
 export const SectionForm = ({ currentState, setCurrentState, currentLabel, currentFlashcard }: SectionFormProps) => {
   const { t: tl } = useTranslation('lesson_plans');
   const toast = useToast();
+  const theme = useAppTheme();
 
   const handleGenerateWrongAnswers = async (index: number) => {
     const q = currentState.questions[index];
@@ -65,12 +67,16 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
 
   return (
     <div>
-      <div className="ml-auto self-end w-fit inline-flex gap-1.5 p-1 rounded-full bg-slate-100 border border-slate-200 mb-4 dark:bg-white/5 dark:border-white/10" role="tablist" aria-label={currentLabel}>
+      <div className="ml-auto self-end w-fit inline-flex gap-1.5 p-1 rounded-full border mb-4" role="tablist" aria-label={currentLabel} style={{ backgroundColor: theme.background.secondary, borderColor: theme.background.tertiary }}>
         <button
           type="button"
           role="tab"
           aria-selected={currentState.tab === ELessonPlan.LessonPlanType.TASK.code}
-          className={`min-w-[82px] border-0 rounded-full px-3.5 py-1.5 bg-transparent text-slate-900 text-[13px] font-bold cursor-pointer transition-all duration-200 hover:bg-blue-600/10 dark:text-slate-100 dark:hover:bg-blue-600/20 ${currentState.tab === ELessonPlan.LessonPlanType.TASK.code ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : ''}`}
+          className="min-w-[82px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+          style={{
+            backgroundColor: currentState.tab === ELessonPlan.LessonPlanType.TASK.code ? theme.primary.main : 'transparent',
+            color: currentState.tab === ELessonPlan.LessonPlanType.TASK.code ? theme.primary.text : theme.text.secondary
+          }}
           onClick={() => setCurrentState((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code as any }))}
         >
           {tl('add_popup.tab_task')}
@@ -79,7 +85,11 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
           type="button"
           role="tab"
           aria-selected={currentState.tab === 'GAME'}
-          className={`min-w-[82px] border-0 rounded-full px-3.5 py-1.5 bg-transparent text-slate-900 text-[13px] font-bold cursor-pointer transition-all duration-200 hover:bg-blue-600/10 dark:text-slate-100 dark:hover:bg-blue-600/20 ${currentState.tab === 'GAME' ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : ''}`}
+          className="min-w-[82px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+          style={{
+            backgroundColor: currentState.tab === 'GAME' ? theme.primary.main : 'transparent',
+            color: currentState.tab === 'GAME' ? theme.primary.text : theme.text.secondary
+          }}
           onClick={() => setCurrentState((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code as any }))}
         >
           {tl('add_popup.tab_game')}
@@ -87,23 +97,32 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
       </div>
 
       <div
-        className={`mt-3 w-full border border-slate-200 rounded-[10px] bg-slate-50 px-3.5 py-3 transition-colors duration-200 dark:border-white/10 dark:bg-white/5 ${currentState.tab === 'TASK' ? 'rounded-tl-[10px]' : 'rounded-tr-[10px]'}`}
+        className={`mt-3 w-full border rounded-[10px] px-3.5 py-3 transition-colors duration-200 ${currentState.tab === 'TASK' ? 'rounded-tl-[10px]' : 'rounded-tr-[10px]'}`}
+        style={{ backgroundColor: theme.background.secondary, borderColor: theme.background.tertiary }}
       >
-        <div className="text-[12px] uppercase tracking-wide font-bold text-slate-500 dark:text-slate-400">{tl('add_popup.content_label')}</div>
+        <div className="text-[12px] uppercase tracking-wide font-bold" style={{ color: theme.text.secondary }}>{tl('add_popup.content_label')}</div>
 
         <div hidden={currentState.tab !== 'TASK'}>
           <div>
-            <div className="mt-2 mx-auto w-fit flex gap-1.5 p-1 rounded-full bg-slate-100 border border-slate-200 dark:bg-white/5 dark:border-white/10">
+            <div className="mt-2 mx-auto w-fit flex gap-1.5 p-1 rounded-full border" style={{ backgroundColor: theme.background.primary, borderColor: theme.background.tertiary }}>
               <button
                 type="button"
-                className={`min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200 ${currentState.taskType === 'ESSAY' ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : 'bg-transparent text-slate-900 hover:bg-blue-600/10 dark:text-slate-100'}`}
+                className="min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+                style={{
+                  backgroundColor: currentState.taskType === 'ESSAY' ? theme.primary.main : 'transparent',
+                  color: currentState.taskType === 'ESSAY' ? theme.primary.text : theme.text.secondary
+                }}
                 onClick={() => setCurrentState((s) => ({ ...s, taskType: 'ESSAY' }))}
               >
                 {tl('add_popup.task_type_essay')}
               </button>
               <button
                 type="button"
-                className={`min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200 ${currentState.taskType === 'MULTIPLE_CHOICE' ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : 'bg-transparent text-slate-900 hover:bg-blue-600/10 dark:text-slate-100'}`}
+                className="min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+                style={{
+                  backgroundColor: currentState.taskType === 'MULTIPLE_CHOICE' ? theme.primary.main : 'transparent',
+                  color: currentState.taskType === 'MULTIPLE_CHOICE' ? theme.primary.text : theme.text.secondary
+                }}
                 onClick={() => setCurrentState((s) => ({ ...s, taskType: 'MULTIPLE_CHOICE' }))}
               >
                 {tl('add_popup.task_type_multiple_choice')}
@@ -181,17 +200,25 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
 
         {currentState.gameVisited ? (
           <div hidden={currentState.tab !== 'GAME'}>
-            <div className="mt-2 mx-auto w-fit flex gap-1.5 p-1 rounded-full bg-slate-100 border border-slate-200 dark:bg-white/5 dark:border-white/10">
+            <div className="mt-2 mx-auto w-fit flex gap-1.5 p-1 rounded-full border" style={{ backgroundColor: theme.background.primary, borderColor: theme.background.tertiary }}>
               <button
                 type="button"
-                className={`min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold text-slate-900 bg-transparent cursor-pointer transition-all duration-200 hover:bg-blue-600/10 dark:text-slate-100 ${currentState.gameType === EGame.GameType.FLASHCARD.code ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : ''}`}
+                className="min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+                style={{
+                  backgroundColor: currentState.gameType === EGame.GameType.FLASHCARD.code ? theme.primary.main : 'transparent',
+                  color: currentState.gameType === EGame.GameType.FLASHCARD.code ? theme.primary.text : theme.text.secondary
+                }}
                 onClick={() => setCurrentState((s) => ({ ...s, gameType: EGame.GameType.FLASHCARD.code as any }))}
               >
                 {EGame.GameType.FLASHCARD.name}
               </button>
               <button
                 type="button"
-                className={`min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold text-slate-900 bg-transparent cursor-pointer transition-all duration-200 hover:bg-blue-600/10 dark:text-slate-100 ${currentState.gameType === EGame.GameType.CROSSWORD.code ? 'bg-blue-600 text-white shadow-[0_2px_8px_rgba(37,99,235,0.35)]' : ''}`}
+                className="min-w-[100px] border-0 rounded-full px-3.5 py-1.5 text-[13px] font-bold cursor-pointer transition-all duration-200"
+                style={{
+                  backgroundColor: currentState.gameType === EGame.GameType.CROSSWORD.code ? theme.primary.main : 'transparent',
+                  color: currentState.gameType === EGame.GameType.CROSSWORD.code ? theme.primary.text : theme.text.secondary
+                }}
                 onClick={() => setCurrentState((s) => ({ ...s, gameType: EGame.GameType.CROSSWORD.code as any }))}
               >
                 {EGame.GameType.CROSSWORD.name}

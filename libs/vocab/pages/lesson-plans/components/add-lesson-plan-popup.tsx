@@ -13,14 +13,15 @@ import { useAddEditLessonPlan } from '../hooks/add-edit-lesson-plan';
 import { useFlashcardWordManager } from '../hooks/flash-card';
 import { FlashcardModal } from './flashcard-modal';
 import { SectionForm } from './create/section-form';
+import { useAppTheme } from '@/vocab/providers';
 
 // ==============================================================================
 // 1. SHARED TYPES & UTILS
 // ==============================================================================
 
 const initialSegmentState = (): SegmentState => ({
-  tab: ELessonPlan.LessonPlanType.TASK.code,
-  gameType: EGame.GameType.FLASHCARD.code,
+  tab: ELessonPlan.LessonPlanType.TASK.code as LessonPlanType,
+  gameType: EGame.GameType.FLASHCARD.code as GameType,
   gameVisited: false,
   taskType: 'ESSAY',
   questions: [],
@@ -36,6 +37,7 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
   const { t: tl } = useTranslation('lesson_plans');
   const { t: tc } = useTranslation('common');
   const toast = useToast();
+  const theme = useAppTheme();
   const { handleSaveLessonPlan } = useAddEditLessonPlan();
 
   const warmUpFlash = useFlashcardWordManager();
@@ -82,7 +84,53 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
 
     setIsSaving(true);
     try {
-      const response = await handleSaveLessonPlan(lessonPlan);
+      const payload: Partial<CreateLessonPlanDto> = {
+        ...lessonPlan,
+        warmUp: {
+          words: warmUpFlash.words,
+          refType: warmUp.tab,
+          gameType: warmUp.gameType,
+          taskType: warmUp.taskType,
+          questions: warmUp.questions,
+        },
+        vocab: {
+          words: vocabFlash.words,
+          refType: vocab.tab,
+          gameType: vocab.gameType,
+          taskType: vocab.taskType,
+          questions: vocab.questions,
+        },
+        grammar: {
+          words: grammarFlash.words,
+          refType: grammar.tab,
+          gameType: grammar.gameType,
+          taskType: grammar.taskType,
+          questions: grammar.questions,
+        },
+        listening: {
+          words: listeningFlash.words,
+          refType: listening.tab,
+          gameType: listening.gameType,
+          taskType: listening.taskType,
+          questions: listening.questions,
+        },
+        writing: {
+          words: writingFlash.words,
+          refType: writing.tab,
+          gameType: writing.gameType,
+          taskType: writing.taskType,
+          questions: writing.questions,
+        },
+        speaking: {
+          words: speakingFlash.words,
+          refType: speaking.tab,
+          gameType: speaking.gameType,
+          taskType: speaking.taskType,
+          questions: speaking.questions,
+        },
+      };
+
+      const response = await handleSaveLessonPlan(payload);
 
       if (response?.message) {
         toast.success(`✅ ${response.message}`, 5500);
@@ -94,79 +142,6 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
       setIsSaving(false);
     }
   };
-
-  useEffect(() => {
-    setLessonPlan((prev) => ({
-      ...prev,
-      warmUp: warmUpFlash.words,
-      warmUpType: warmUp.tab,
-      warmUpGameName: warmUp.gameType,
-      warmUpTaskType: warmUp.taskType,
-      warmUpQuestions: warmUp.questions,
-
-      vocab: vocabFlash.words,
-      vocabType: vocab.tab,
-      vocabGameName: vocab.gameType,
-      vocabTaskType: vocab.taskType,
-      vocabQuestions: vocab.questions,
-
-      grammar: grammarFlash.words,
-      grammarType: grammar.tab,
-      grammarGameName: grammar.gameType,
-      grammarTaskType: grammar.taskType,
-      grammarQuestions: grammar.questions,
-
-      listening: listeningFlash.words,
-      listeningType: listening.tab,
-      listeningGameName: listening.gameType,
-      listeningTaskType: listening.taskType,
-      listeningQuestions: listening.questions,
-
-      writing: writingFlash.words,
-      writingType: writing.tab,
-      writingGameName: writing.gameType,
-      writingTaskType: writing.taskType,
-      writingQuestions: writing.questions,
-
-      speaking: speakingFlash.words,
-      speakingType: speaking.tab,
-      speakingGameName: speaking.gameType,
-      speakingTaskType: speaking.taskType,
-      speakingQuestions: speaking.questions,
-    }));
-  }, [
-    warmUpFlash.words,
-    vocabFlash.words,
-    grammarFlash.words,
-    listeningFlash.words,
-    writingFlash.words,
-    speakingFlash.words,
-    warmUp.tab,
-    warmUp.gameType,
-    warmUp.taskType,
-    warmUp.questions,
-    vocab.tab,
-    vocab.gameType,
-    vocab.taskType,
-    vocab.questions,
-    grammar.tab,
-    grammar.gameType,
-    grammar.taskType,
-    grammar.questions,
-    listening.tab,
-    listening.gameType,
-    listening.taskType,
-    listening.questions,
-    writing.tab,
-    writing.gameType,
-    writing.taskType,
-    writing.questions,
-    speaking.tab,
-    speaking.gameType,
-    speaking.taskType,
-    speaking.questions,
-  ]);
-
 
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     { key: 'info', label: tl('add_popup.info'), icon: <Info size={16} /> },
@@ -180,12 +155,16 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
 
   return (
     <BasePopup open={open} onClose={onClose} title={tl('add_popup.title')}>
-      <div className="flex gap-5 min-h-[500px]">
-        <div className="w-[220px] shrink-0 flex flex-col gap-1.5 border-r border-slate-200 pr-4 dark:border-white/10">
+      <div className="flex gap-5 min-h-[500px]" style={{ backgroundColor: theme.background.primary, color: theme.text.primary }}>
+        <div className="w-[220px] shrink-0 flex flex-col gap-1.5 border-r pr-4" style={{ borderColor: theme.background.tertiary }}>
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 border-0 bg-transparent rounded-lg cursor-pointer text-left text-[14px] font-semibold text-slate-800 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-white/5 dark:hover:text-white ${activeTab === tab.key ? 'bg-indigo-100 text-indigo-700 font-bold hover:bg-indigo-100 hover:text-indigo-700 dark:bg-indigo-600/20 dark:text-indigo-400 dark:hover:bg-indigo-600/20 dark:hover:text-indigo-400' : ''}`}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 border-0 rounded-lg cursor-pointer text-left text-[14px] font-semibold transition-all duration-200"
+              style={{
+                backgroundColor: activeTab === tab.key ? theme.primary.main : 'transparent',
+                color: activeTab === tab.key ? theme.primary.text : theme.text.secondary,
+              }}
               onClick={() => setActiveTab(tab.key)}
             >
               {tab.icon}
@@ -199,21 +178,35 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
             <div>
               <div className="flex flex-row gap-4 items-end">
                 <div className="flex flex-col gap-1 flex-1">
-                  <label className="text-[12px] font-semibold text-slate-500 uppercase tracking-wide dark:text-slate-300">{tl('add_popup.name')}</label>
+                  <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                    {tl('add_popup.name')}
+                  </label>
                   <input
                     type="text"
                     value={lessonPlan.name || ''}
                     onChange={(e) => setLessonPlan((s) => ({ ...s, name: e.target.value }))}
                     placeholder={tl('add_popup.name_placeholder')}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-800 dark:bg-white/5 dark:border-white/10 dark:text-slate-200"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border text-[13px] outline-none"
+                    style={{
+                      backgroundColor: theme.background.secondary,
+                      color: theme.text.primary,
+                      borderColor: theme.background.tertiary,
+                    }}
                   />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
-                  <label className="text-[12px] font-semibold text-slate-500 uppercase tracking-wide dark:text-slate-300">{tl('add_popup.level')}</label>
+                  <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                    {tl('add_popup.level')}
+                  </label>
                   <select
                     value={lessonPlan.level || ELessonPlan.LessonLevel.A1}
                     onChange={(e) => setLessonPlan((s) => ({ ...s, level: e.target.value }))}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-[13px] text-slate-800 dark:bg-white/5 dark:border-white/10 dark:text-slate-200"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border text-[13px] outline-none"
+                    style={{
+                      backgroundColor: theme.background.secondary,
+                      color: theme.text.primary,
+                      borderColor: theme.background.tertiary,
+                    }}
                   >
                     {Object.values(ELessonPlan.LessonLevel).map((lv) => (
                       <option key={lv} value={lv}>
@@ -252,7 +245,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
       <div className="mt-4 flex justify-end gap-2.5">
         <button
           type="button"
-          className="border border-transparent rounded-[10px] px-4 py-2.5 text-[14px] font-semibold cursor-pointer bg-transparent border-slate-300 text-slate-700 dark:text-slate-200"
+          className="border rounded-[10px] px-4 py-2.5 text-[14px] font-semibold cursor-pointer bg-transparent"
+          style={{ borderColor: theme.background.tertiary, color: theme.text.primary }}
           onClick={onClose}
         >
           {tc('cancel')}
