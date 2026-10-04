@@ -1,10 +1,12 @@
 import { vocabApiClient } from '@/core/connectors';
-import type { CreateLessonPlanDto, GetLessonPlansDto } from './dtos';
+import type { CreateLessonPlanDto, GetLessonPlansDto, UpdateLessonPlanDto, LessonPlanDetailData } from './dtos';
 
 const ENDPOINTS = {
   GET_LIST: '/lesson-plans/list',
   CREATE: '/lesson-plans',
+  UPDATE: '/lesson-plans/update',
   DETAIL: '/lesson-plans/detail',
+  DELETE: (id: string) => `/lesson-plans/${id}`,
   GEMINI_WRONG_ANSWERS: '/integration/gemini/generate-wrong-answers',
 } as const;
 
@@ -18,7 +20,17 @@ async function createLessonPlan(body: CreateLessonPlanDto) {
   return data;
 }
 
-async function getLessonPlanDetail(id: string) {
+async function updateLessonPlan(body: UpdateLessonPlanDto) {
+  const { data } = await vocabApiClient.put(ENDPOINTS.UPDATE, body);
+  return data;
+}
+
+async function deleteLessonPlan(id: string) {
+  const { data } = await vocabApiClient.delete(ENDPOINTS.DELETE(id));
+  return data;
+}
+
+async function getLessonPlanDetail(id: string): Promise<LessonPlanDetailData> {
   const { data } = await vocabApiClient.post(ENDPOINTS.DETAIL, { id });
   return data;
 }
@@ -31,4 +43,11 @@ async function generateWrongAnswers(question: string, correctAnswer: string) {
   return data;
 }
 
-export { getLessonPlans, createLessonPlan, getLessonPlanDetail, generateWrongAnswers };
+export {
+  getLessonPlans,
+  createLessonPlan,
+  updateLessonPlan,
+  deleteLessonPlan,
+  getLessonPlanDetail,
+  generateWrongAnswers,
+};

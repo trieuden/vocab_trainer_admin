@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { getLessonPlanDetail } from "@/core/api/lesson_plans";
+import { useEffect, useState } from 'react';
+import { getLessonPlanDetail } from '@/core/api/lesson_plans';
+import type { LessonPlanDetailData } from '@/core/api/lesson_plans/dtos';
 
 export const useLessonPlanDetail = (id: string | null) => {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<LessonPlanDetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,14 +21,16 @@ export const useLessonPlanDetail = (id: string | null) => {
         const result = await getLessonPlanDetail(id);
         if (!cancelled) setData(result);
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Load detail failed");
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Load detail failed');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   return { data, loading, error };
-}
+};
