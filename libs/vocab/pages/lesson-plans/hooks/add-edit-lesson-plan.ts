@@ -1,5 +1,5 @@
 import { createLessonPlan } from "@/core/api/lesson_plans";
-import { CreateLessonPlanDto, SectionInputDto, MultipleChoiceQuestionDto } from "@/core/api/lesson_plans/dtos";
+import { CreateLessonPlanDto, SectionInputDto, MultipleChoiceQuestionDto, WordDto } from "@/core/api/lesson_plans/dtos";
 import { getAuthUserFromCookie } from "@/core/auth/authCookies";
 import { useToast } from "@/core/components/base-toast/base-toast";
 import { ELessonPlan } from "@/core/enums/ELessonPlan";
@@ -8,43 +8,96 @@ export const useAddEditLessonPlan = () => {
     const toast = useToast();
 
     const buildSection = (
-        words?: any[],
+        sectionOrWords?: SectionInputDto | WordDto[],
         type?: string,
         gameName?: string,
         taskType?: string,
         questions?: MultipleChoiceQuestionDto[],
+        defaultTaskName: string = "Task",
     ): SectionInputDto | undefined => {
-        if (!words?.length && !type && !taskType) return undefined;
+        const isObject = sectionOrWords && typeof sectionOrWords === "object" && !Array.isArray(sectionOrWords);
+        const sectionObj = isObject ? (sectionOrWords as SectionInputDto & { tab?: string; gameName?: string }) : undefined;
 
-        if (type === "GAME") {
+        const rawWords = isObject ? sectionObj?.words : (Array.isArray(sectionOrWords) ? sectionOrWords : undefined);
+        const sectionType = isObject ? (sectionObj?.refType || sectionObj?.tab) : type;
+        const gameType = isObject ? (sectionObj?.gameType || sectionObj?.gameName) : gameName;
+        const finalTaskType = isObject ? sectionObj?.taskType : taskType;
+        const rawQuestions = isObject ? sectionObj?.questions : questions;
+        const isTouched = isObject ? !!sectionObj?.isTouched : false;
+        const taskName = (isObject ? sectionObj?.taskName : undefined) || defaultTaskName;
+
+        const mappedWords: WordDto[] = (rawWords || [])
+            .filter((w): w is WordDto => !!w && typeof w.word === "string" && w.word.trim().length > 0)
+            .map((w) => ({
+                word: w.word.trim(),
+                audio: w.audio || "",
+                phonetic: w.phoneticText || w.phonetic || "",
+                definition: w.definition || "",
+            }));
+
+        const validQuestions: MultipleChoiceQuestionDto[] = (rawQuestions || [])
+            .filter((q): q is MultipleChoiceQuestionDto => !!q && typeof q.question === "string" && q.question.trim().length > 0 && typeof q.correctAnswer === "string" && q.correctAnswer.trim().length > 0)
+            .map((q) => ({
+                question: q.question.trim(),
+                correctAnswer: q.correctAnswer.trim(),
+                wrongAnswers: Array.isArray(q.wrongAnswers)
+                    ? q.wrongAnswers.filter((wa): wa is string => typeof wa === "string" && wa.trim().length > 0).map((wa) => wa.trim())
+                    : [],
+            }));
+
+        const hasWords = mappedWords.length > 0;
+        const hasQuestions = validQuestions.length > 0;
+
+        if (sectionType === ELessonPlan.LessonPlanType.GAME.code || sectionType === "GAME") {
+            if (!hasWords) return undefined;
             return {
-                words: words?.map((w: any) => ({
-                    word: w.word,
-                    audio: w.audio,
-                    phonetic: w.phonetic,
-                    definition: w.definition,
-                })),
-                gameType: gameName as any,
+                words: mappedWords,
+                gameType: (gameType || "FLASHCARD") as SectionInputDto["gameType"],
+                refType: ELessonPlan.LessonPlanType.GAME.code as SectionInputDto["refType"],
             };
         }
 
-        if (type === "TASK") {
-            const section: SectionInputDto = {
-                words: words?.map((w: any) => ({
-                    word: w.word,
-                    audio: w.audio,
-                    phonetic: w.phonetic,
-                    definition: w.definition,
-                })),
-                taskName: "Task",
-                taskType: taskType as any,
-            };
-            if (taskType === "MULTIPLE_CHOICE" && questions?.length) {
-                section.questions = questions.map(({ question, correctAnswer, wrongAnswers }) => ({
-                    question, correctAnswer, wrongAnswers,
-                }));
+        if (sectionType === ELessonPlan.LessonPlanType.TASK.code || sectionType === "TASK") {
+            if (finalTaskType === "MULTIPLE_CHOICE") {
+                if (!hasQuestions && !hasWords) return undefined;
+                const section: SectionInputDto = {
+                    taskName,
+                    taskType: "MULTIPLE_CHOICE",
+                    refType: ELessonPlan.LessonPlanType.TASK.code as SectionInputDto["refType"],
+                };
+                if (hasQuestions) section.questions = validQuestions;
+                if (hasWords) section.words = mappedWords;
+                return section;
             }
-            return section;
+
+            if (finalTaskType === "ESSAY") {
+                if (!hasWords && !isTouched) return undefined;
+                const section: SectionInputDto = {
+                    taskName,
+                    taskType: "ESSAY",
+                    refType: ELessonPlan.LessonPlanType.TASK.code as SectionInputDto["refType"],
+                };
+                if (hasWords) section.words = mappedWords;
+                return section;
+            }
+        }
+
+        // Fallback: If sectionType was not set but words or questions exist
+        if (hasWords) {
+            return {
+                words: mappedWords,
+                gameType: (gameType || "FLASHCARD") as SectionInputDto["gameType"],
+                refType: ELessonPlan.LessonPlanType.GAME.code as SectionInputDto["refType"],
+            };
+        }
+
+        if (hasQuestions) {
+            return {
+                taskName,
+                taskType: "MULTIPLE_CHOICE",
+                questions: validQuestions,
+                refType: ELessonPlan.LessonPlanType.TASK.code as SectionInputDto["refType"],
+            };
         }
 
         return undefined;
@@ -64,48 +117,12 @@ export const useAddEditLessonPlan = () => {
             description: data.description,
             userId: authUser.id,
 
-            warmUp: buildSection(
-                (data as any).warmUp,
-                (data as any).warmUpType,
-                (data as any).warmUpGameName,
-                (data as any).warmUpTaskType,
-                (data as any).warmUpQuestions,
-            ),
-            vocab: buildSection(
-                (data as any).vocab,
-                (data as any).vocabType,
-                (data as any).vocabGameName,
-                (data as any).vocabTaskType,
-                (data as any).vocabQuestions,
-            ),
-            grammar: buildSection(
-                (data as any).grammar,
-                (data as any).grammarType,
-                (data as any).grammarGameName,
-                (data as any).grammarTaskType,
-                (data as any).grammarQuestions,
-            ),
-            listening: buildSection(
-                (data as any).listening,
-                (data as any).listeningType,
-                (data as any).listeningGameName,
-                (data as any).listeningTaskType,
-                (data as any).listeningQuestions,
-            ),
-            writing: buildSection(
-                (data as any).writing,
-                (data as any).writingType,
-                (data as any).writingGameName,
-                (data as any).writingTaskType,
-                (data as any).writingQuestions,
-            ),
-            speaking: buildSection(
-                (data as any).speaking,
-                (data as any).speakingType,
-                (data as any).speakingGameName,
-                (data as any).speakingTaskType,
-                (data as any).speakingQuestions,
-            ),
+            warmUp: buildSection(data.warmUp, undefined, undefined, undefined, undefined, "Warm-up"),
+            vocab: buildSection(data.vocab, undefined, undefined, undefined, undefined, "Vocabulary"),
+            grammar: buildSection(data.grammar, undefined, undefined, undefined, undefined, "Grammar"),
+            listening: buildSection(data.listening, undefined, undefined, undefined, undefined, "Listening"),
+            writing: buildSection(data.writing, undefined, undefined, undefined, undefined, "Writing"),
+            speaking: buildSection(data.speaking, undefined, undefined, undefined, undefined, "Speaking"),
         };
 
         try {
@@ -115,5 +132,5 @@ export const useAddEditLessonPlan = () => {
             toast.error("Create lesson plan failed");
         }
     };
-    return { handleSaveLessonPlan };
+    return { handleSaveLessonPlan, buildSection };
 };

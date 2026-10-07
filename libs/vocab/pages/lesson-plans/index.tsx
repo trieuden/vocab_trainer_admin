@@ -17,11 +17,24 @@ import {
   useToast,
 } from '../../../core/components';
 import { getLessonPlanDetail, deleteLessonPlan } from '@/core/api/lesson_plans';
-import { AddLessonPlanPopup, LessonPlanDetail, LessonPlanSlideshow } from './components';
+import { AddLessonPlanDrawer, LessonPlanDetail, LessonPlanSlideshow } from './components';
 import { useLessonPlans } from './hooks';
+import { EGame } from '@/core/enums';
 import { enumData } from '@/core/enums/enumData';
 import { useIsMounted } from '@/core/hooks/useIsMounted';
 import type { GetLessonPlansDto, LessonPlanItem, LessonPlanDetailData } from '@/core/api/lesson_plans/dtos';
+
+const gameTypeMap: Record<string, string> = {
+  [EGame.GameType.CROSSWORD.code]: EGame.GameType.CROSSWORD.name,
+  [EGame.GameType.FLASHCARD.code]: EGame.GameType.FLASHCARD.name,
+};
+
+const renderSectionCell = (section?: { id?: string; name?: string; type?: string } | null) => {
+  if (!section) return '—';
+  if (section.name) return section.name;
+  if (section.type) return gameTypeMap[section.type] || section.type;
+  return '—';
+};
 
 const { PAGE_SIZE, PAGE_INDEX } = enumData.PageRequest;
 
@@ -30,7 +43,7 @@ export const LessonPlansPage = () => {
   const { t: tl } = useTranslation('lesson_plans');
   const { success, error } = useToast();
   const isMounted = useIsMounted();
-  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showAddDrawer, setShowAddDrawer] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<LessonPlanItem | null>(null);
   const [slideshowData, setSlideshowData] = useState<LessonPlanDetailData | null>(null);
@@ -82,37 +95,37 @@ export const LessonPlansPage = () => {
       key: 'warmUp',
       title: tl('col_warm_up'),
       width: 180,
-      render: (row) => row.warmUp?.name || '—',
+      render: (row) => renderSectionCell(row.warmUp),
     },
     {
       key: 'vocab',
       title: tl('col_vocab'),
       width: 180,
-      render: (row) => row.vocab?.name || '—',
+      render: (row) => renderSectionCell(row.vocab),
     },
     {
       key: 'grammar',
       title: tl('col_grammar'),
       width: 180,
-      render: (row) => row.grammar?.name || '—',
+      render: (row) => renderSectionCell(row.grammar),
     },
     {
       key: 'listening',
       title: tl('col_listening'),
       width: 180,
-      render: (row) => row.listening?.name || '—',
+      render: (row) => renderSectionCell(row.listening),
     },
     {
       key: 'writing',
       title: tl('col_writing'),
       width: 180,
-      render: (row) => row.writing?.name || '—',
+      render: (row) => renderSectionCell(row.writing),
     },
     {
       key: 'speaking',
       title: tl('col_speaking'),
       width: 180,
-      render: (row) => row.speaking?.name || '—',
+      render: (row) => renderSectionCell(row.speaking),
     },
     {
       key: 'actions',
@@ -185,7 +198,7 @@ export const LessonPlansPage = () => {
         <span className="text-xs text-slate-400 ml-auto">
           {data.length} {t('results')}
         </span>
-        <BaseAddButton label={tl('add')} onClick={() => setShowAddPopup(true)} />
+        <BaseAddButton label={tl('add')} onClick={() => setShowAddDrawer(true)} />
       </BaseToolbar>
 
       {loading ? (
@@ -206,9 +219,9 @@ export const LessonPlansPage = () => {
         onCancel={() => setDeleteTarget(null)}
       />
 
-      <AddLessonPlanPopup
-        open={showAddPopup}
-        onClose={() => setShowAddPopup(false)}
+      <AddLessonPlanDrawer
+        open={showAddDrawer}
+        onClose={() => setShowAddDrawer(false)}
         onCreated={() => setRefresh(new Date().getTime())}
       />
 

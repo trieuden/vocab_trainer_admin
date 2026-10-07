@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Settings2, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import styles from './base-table.module.css';
@@ -124,19 +125,53 @@ function BaseTableInner<T = Record<string, unknown>>(
   });
 
   const [pickerOpen, setPickerOpen] = useState(false);
-  const pickerRef = useRef<HTMLDivElement>(null);
+  const [pickerPos, setPickerPos] = useState<{ top: number; right: number } | null>(null);
+  const pickerBtnRef = useRef<HTMLButtonElement>(null);
+  const pickerDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close picker when clicking outside
+  const handlePickerToggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPickerOpen((prev) => {
+      const next = !prev;
+      if (next && pickerBtnRef.current) {
+        const rect = pickerBtnRef.current.getBoundingClientRect();
+        setPickerPos({
+          top: rect.bottom + 6,
+          right: Math.max(8, window.innerWidth - rect.right),
+        });
+      }
+      return next;
+    });
+  }, []);
+
+  // Close picker when clicking outside or scrolling
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        pickerDropdownRef.current &&
+        !pickerDropdownRef.current.contains(target) &&
+        pickerBtnRef.current &&
+        !pickerBtnRef.current.contains(target)
+      ) {
         setPickerOpen(false);
       }
     }
+
+    function handleScrollOrResize() {
+      setPickerOpen(false);
+    }
+
     if (pickerOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('resize', handleScrollOrResize);
+      window.addEventListener('scroll', handleScrollOrResize, true);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+    };
   }, [pickerOpen]);
 
   const toggleColumn = (key: string) => {
@@ -232,43 +267,6 @@ function BaseTableInner<T = Record<string, unknown>>(
   // ─────────────────────────────────────────────
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      {/* ── Toolbar ── */}
-      <div className={styles.toolbar}>
-        <div className={styles.toolbarRight} ref={pickerRef}>
-          <button
-            className={styles.pickerBtn}
-            onClick={() => setPickerOpen((v) => !v)}
-            title={t('show_hide_columns_title')}
-          >
-            <Settings2 size={15} />
-            {/* <span>{t('columns')}</span> */}
-          </button>
-
-          {pickerOpen && (
-            <div className={styles.pickerDropdown}>
-              <p className={styles.pickerTitle}>{t('toggle_columns')}</p>
-              <ul>
-                {hideableColumns.map((col) => {
-                  const isVisible = visibleKeys.has(col.key);
-                  return (
-                    <li key={col.key}>
-                      <label className={styles.pickerItem}>
-                        <input
-                          type="checkbox"
-                          checked={isVisible}
-                          onChange={() => toggleColumn(col.key)}
-                        />
-                        <span>{col.title}</span>
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* ── Table ── */}
       <div className={styles.scrollContainer}>
         <table
@@ -285,6 +283,7 @@ function BaseTableInner<T = Record<string, unknown>>(
             <tr>
               {visibleColumns.map((col, colIndex) => {
                 const isSorting = sortKey === col.key;
+                const isLast = colIndex === visibleColumns.length - 1;
                 const align = col.align ?? 'left';
                 const leftPin = stickyLeftOffset(visibleColumns, colIndex, widths);
                 const rightPin = stickyRightOffset(visibleColumns, colIndex, widths);
@@ -303,19 +302,33 @@ function BaseTableInner<T = Record<string, unknown>>(
                     }}
                     onClick={() => handleSort(col)}
                   >
-                    <div className={styles.thInner}>
-                      <span className={styles.thLabel}>{col.title}</span>
+                    <div className={`${styles.thInner} ${isLast ? styles.thInnerLast : ''}`}>
+                      <div className={styles.thTitleGroup}>
+                        <span className={styles.thLabel}>{col.title}</span>
 
-                      {col.sortable && (
-                        <span className={styles.sortIcon}>
-                          {isSorting && sortDir === 'asc' ? (
-                            <ChevronUp size={13} />
-                          ) : isSorting && sortDir === 'desc' ? (
-                            <ChevronDown size={13} />
-                          ) : (
-                            <ChevronsUpDown size={13} className={styles.sortIdle} />
-                          )}
-                        </span>
+                        {col.sortable && (
+                          <span className={styles.sortIcon}>
+                            {isSorting && sortDir === 'asc' ? (
+                              <ChevronUp size={13} />
+                            ) : isSorting && sortDir === 'desc' ? (
+                              <ChevronDown size={13} />
+                            ) : (
+                              <ChevronsUpDown size={13} className={styles.sortIdle} />
+                            )}
+                          </span>
+                        )}
+                      </div>
+
+                      {isLast && hideableColumns.length > 0 && (
+                        <button
+                          ref={pickerBtnRef}
+                          type="button"
+                          className={styles.pickerBtn}
+                          onClick={handlePickerToggle}
+                          title={t('show_hide_columns_title')}
+                        >
+                          <Settings2 size={14} />
+                        </button>
                       )}
                     </div>
 
@@ -395,6 +408,46 @@ function BaseTableInner<T = Record<string, unknown>>(
           </tbody>
         </table>
       </div>
+
+      {/* ── Column Picker Dropdown (Portal) ── */}
+      {pickerOpen &&
+        pickerPos &&
+        typeof window !== 'undefined' &&
+        createPortal(
+          <div
+            className={`${styles.wrapper} ${styles.portalRoot}`}
+            style={{
+              top: pickerPos.top,
+              right: pickerPos.right,
+            }}
+          >
+            <div
+              ref={pickerDropdownRef}
+              className={styles.pickerDropdown}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className={styles.pickerTitle}>{t('toggle_columns')}</p>
+              <ul>
+                {hideableColumns.map((col) => {
+                  const isVisible = visibleKeys.has(col.key);
+                  return (
+                    <li key={col.key}>
+                      <label className={styles.pickerItem}>
+                        <input
+                          type="checkbox"
+                          checked={isVisible}
+                          onChange={() => toggleColumn(col.key)}
+                        />
+                        <span>{col.title}</span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

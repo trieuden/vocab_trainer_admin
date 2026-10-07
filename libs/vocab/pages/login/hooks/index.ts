@@ -9,9 +9,7 @@ import { LoginRequestDto } from "@/core/api/auth/dtos";
 export const useLogin = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const locale = useParams().locale;
     const toast = useToast();
-
     const handleSubmit = async (body: LoginRequestDto) => {
         try {
             const data = await login(body);
@@ -21,7 +19,7 @@ export const useLogin = () => {
                 user: data.user,
             });
             toast.success("Đăng nhập thành công");
-            router.push(`/${locale}/`);
+            router.push('/');
             router.refresh();
         } catch (err) {
             let message = "Đăng nhập thất bại";

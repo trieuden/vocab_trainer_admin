@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BasePopup, useToast } from '@/core/components';
+import { BaseDrawer, useToast } from '@/core/components';
 import { ClipboardList, BookOpen, List, Headphones, Edit3, MessageCircle, Info } from 'lucide-react';
 import { EGame, ELessonPlan } from '@/core/enums';
 import type { CreateLessonPlanDto, MultipleChoiceQuestionDto, QuestionState, SegmentState, TabKey } from '@/core/api/lesson_plans/dtos';
@@ -27,13 +27,15 @@ const initialSegmentState = (): SegmentState => ({
   questions: [],
 });
 
-interface AddLessonPlanPopupProps {
+export interface AddLessonPlanDrawerProps {
   open: boolean;
   onClose: () => void;
   onCreated?: () => void;
 }
 
-export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPopupProps) => {
+export type AddLessonPlanPopupProps = AddLessonPlanDrawerProps;
+
+export const AddLessonPlanDrawer = ({ open, onClose, onCreated }: AddLessonPlanDrawerProps) => {
   const { t: tl } = useTranslation('lesson_plans');
   const { t: tc } = useTranslation('common');
   const toast = useToast();
@@ -92,6 +94,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: warmUp.gameType,
           taskType: warmUp.taskType,
           questions: warmUp.questions,
+          taskName: tl('col_warm_up'),
+          isTouched: warmUp.isTouched || warmUpFlash.words.length > 0 || warmUp.questions.length > 0,
         },
         vocab: {
           words: vocabFlash.words,
@@ -99,6 +103,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: vocab.gameType,
           taskType: vocab.taskType,
           questions: vocab.questions,
+          taskName: tl('col_vocab'),
+          isTouched: vocab.isTouched || vocabFlash.words.length > 0 || vocab.questions.length > 0,
         },
         grammar: {
           words: grammarFlash.words,
@@ -106,6 +112,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: grammar.gameType,
           taskType: grammar.taskType,
           questions: grammar.questions,
+          taskName: tl('col_grammar'),
+          isTouched: grammar.isTouched || grammarFlash.words.length > 0 || grammar.questions.length > 0,
         },
         listening: {
           words: listeningFlash.words,
@@ -113,6 +121,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: listening.gameType,
           taskType: listening.taskType,
           questions: listening.questions,
+          taskName: tl('col_listening'),
+          isTouched: listening.isTouched || listeningFlash.words.length > 0 || listening.questions.length > 0,
         },
         writing: {
           words: writingFlash.words,
@@ -120,6 +130,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: writing.gameType,
           taskType: writing.taskType,
           questions: writing.questions,
+          taskName: tl('col_writing'),
+          isTouched: writing.isTouched || writingFlash.words.length > 0 || writing.questions.length > 0,
         },
         speaking: {
           words: speakingFlash.words,
@@ -127,6 +139,8 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           gameType: speaking.gameType,
           taskType: speaking.taskType,
           questions: speaking.questions,
+          taskName: tl('col_speaking'),
+          isTouched: speaking.isTouched || speakingFlash.words.length > 0 || speaking.questions.length > 0,
         },
       };
 
@@ -154,13 +168,38 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
   ];
 
   return (
-    <BasePopup open={open} onClose={onClose} title={tl('add_popup.title')}>
-      <div className="flex gap-5 min-h-[500px]" style={{ backgroundColor: theme.background.primary, color: theme.text.primary }}>
-        <div className="w-[220px] shrink-0 flex flex-col gap-1.5 border-r pr-4" style={{ borderColor: theme.background.tertiary }}>
+    <BaseDrawer
+      open={open}
+      onClose={onClose}
+      title={tl('add_popup.title')}
+      width="90%"
+      footer={
+        <div className="flex justify-end gap-2.5 w-full">
+          <button
+            type="button"
+            className="border rounded-[10px] px-4 py-2 text-[14px] font-medium cursor-pointer bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            style={{ borderColor: theme.background.tertiary, color: theme.text.primary }}
+            onClick={onClose}
+          >
+            {tc('cancel')}
+          </button>
+          <button
+            type="button"
+            className="border border-transparent rounded-[10px] px-4 py-2 text-[14px] font-medium cursor-pointer bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+            onClick={handleCreateLessonPlan}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Đang tạo...' : tl('add_popup.save')}
+          </button>
+        </div>
+      }
+    >
+      <div className="flex gap-5 min-h-[500px]" style={{ color: theme.text.primary }}>
+        <div className="w-[200px] shrink-0 flex flex-col gap-1.5 border-r pr-4" style={{ borderColor: theme.background.tertiary }}>
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 border-0 rounded-lg cursor-pointer text-left text-[14px] font-semibold transition-all duration-200"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 border-0 rounded-lg cursor-pointer text-left text-[14px] font-medium transition-all duration-200"
               style={{
                 backgroundColor: activeTab === tab.key ? theme.primary.main : 'transparent',
                 color: activeTab === tab.key ? theme.primary.text : theme.text.secondary,
@@ -178,7 +217,7 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
             <div>
               <div className="flex flex-row gap-4 items-end">
                 <div className="flex flex-col gap-1 flex-1">
-                  <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                  <label className="text-[12px] font-medium uppercase tracking-wide" style={{ color: theme.text.secondary }}>
                     {tl('add_popup.name')}
                   </label>
                   <input
@@ -195,7 +234,7 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
                   />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
-                  <label className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: theme.text.secondary }}>
+                  <label className="text-[12px] font-medium uppercase tracking-wide" style={{ color: theme.text.secondary }}>
                     {tl('add_popup.level')}
                   </label>
                   <select
@@ -241,25 +280,9 @@ export const AddLessonPlanPopup = ({ open, onClose, onCreated }: AddLessonPlanPo
           )}
         </div>
       </div>
-
-      <div className="mt-4 flex justify-end gap-2.5">
-        <button
-          type="button"
-          className="border rounded-[10px] px-4 py-2.5 text-[14px] font-semibold cursor-pointer bg-transparent"
-          style={{ borderColor: theme.background.tertiary, color: theme.text.primary }}
-          onClick={onClose}
-        >
-          {tc('cancel')}
-        </button>
-        <button
-          type="button"
-          className="border border-transparent rounded-[10px] px-4 py-2.5 text-[14px] font-semibold cursor-pointer bg-blue-600 text-white"
-          onClick={handleCreateLessonPlan}
-          disabled={isSaving}
-        >
-          {isSaving ? 'Đang tạo...' : tl('add_popup.save')}
-        </button>
-      </div>
-    </BasePopup>
+    </BaseDrawer>
   );
 };
+
+export const AddLessonPlanPopup = AddLessonPlanDrawer;
+

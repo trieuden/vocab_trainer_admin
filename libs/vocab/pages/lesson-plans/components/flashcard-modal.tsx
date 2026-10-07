@@ -117,7 +117,6 @@ export const FlashcardModal = ({ flashcard, onRemoveWord }: FlashcardModalProps)
             onKeyDown={(event) => {
               if (event.key !== 'Enter') return;
               if (event.nativeEvent.isComposing) return;
-              if (!event.ctrlKey && !event.metaKey) return;
               event.preventDefault();
               void handleAddWord(inputWord);
             }}

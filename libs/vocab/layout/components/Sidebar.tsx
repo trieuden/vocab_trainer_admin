@@ -95,12 +95,19 @@ function SidebarNavItem({ item, isActive, level = 0, isCollapsed = false }: { it
   );
 }
 
+const normalizePath = (p?: string) => (p || '').replace(/\/+$/, '') || '/';
+
 export function Sidebar({ items, isCollapsed, onToggleCollapse }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+  const normalizedPath = normalizePath(pathname);
 
   const handleIsActive = (href: string) => {
-    return pathname === href || pathname?.startsWith(href + '/');
+    const normalizedHref = normalizePath(href);
+    if (normalizedHref === '/') {
+      return normalizedPath === '/';
+    }
+    return normalizedPath === normalizedHref || normalizedPath.startsWith(normalizedHref + '/');
   };
 
   return (

@@ -29,18 +29,15 @@ export function Header() {
 
   // Build breadcrumb from path
   const pathSegments = pathname?.split('/').filter(Boolean) || [];
-  // Skip locale segment (first segment)
-  const pageSegments = pathSegments.slice(1);
-  const currentSegment = pageSegments[pageSegments.length - 1] || 'dashboard';
+  const currentSegment = pathSegments[pathSegments.length - 1] || 'dashboard';
   const currentPage = t(ROUTE_LABEL_MAP[currentSegment] || `nav.${currentSegment}`, { defaultValue: currentSegment.charAt(0).toUpperCase() + currentSegment.slice(1) });
-  const parentSegment = pageSegments.length > 1 ? pageSegments[pageSegments.length - 2] : null;
+  const parentSegment = pathSegments.length > 1 ? pathSegments[pathSegments.length - 2] : null;
   const parentPage = parentSegment ? t(ROUTE_LABEL_MAP[parentSegment] || `nav.${parentSegment}`, { defaultValue: parentSegment }) : null;
 
   const handleLogout = () => {
     clearAuthCookies();
     setIsProfileMenuOpen(false);
-    const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'vi';
-    router.push(`/${locale}/login`);
+    router.push('/login/');
   };
 
   return (

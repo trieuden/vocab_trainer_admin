@@ -7,7 +7,7 @@
   --bt-bg: #ffffff;
   --bt-border: #e5e7eb;
   --bt-thead-bg: #f9fafb;
-  --bt-thead-text: #374151;
+  --bt-thead-text: #0f172a;
   --bt-row-hover: #f0f9ff;
   --bt-row-stripe: #fafafa;
   --bt-text: #111827;
@@ -38,8 +38,8 @@
 :global(.dark) .wrapper {
   --bt-bg: #0f172a;
   --bt-border: rgba(255, 255, 255, 0.08);
-  --bt-thead-bg: rgba(255, 255, 255, 0.04);
-  --bt-thead-text: #94a3b8;
+  --bt-thead-bg: #1e293b;
+  --bt-thead-text: var(--bt-text);
   --bt-row-hover: rgba(59, 130, 246, 0.08);
   --bt-row-stripe: rgba(255, 255, 255, 0.02);
   --bt-text: #e2e8f0;
@@ -78,17 +78,17 @@
 .pickerBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  font-size: 12.5px;
-  font-weight: 500;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   color: var(--bt-muted);
   background: transparent;
   border: 1px solid var(--bt-border);
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.18s ease;
-  font-family: inherit;
+  flex-shrink: 0;
 }
 
 .pickerBtn:hover {
@@ -97,17 +97,19 @@
   background: var(--bt-accent-light);
 }
 
+.portalRoot {
+  position: fixed;
+  z-index: 9999;
+  width: auto;
+}
+
 /* Column picker dropdown */
 .pickerDropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
   min-width: 200px;
   background: var(--bt-bg);
   border: 1px solid var(--bt-border);
   border-radius: 10px;
   box-shadow: var(--bt-picker-shadow);
-  z-index: 200;
   padding: 10px 0;
   animation: picker-fade-in 0.15s ease;
 }
@@ -169,7 +171,7 @@
 .scrollContainer {
   overflow-x: auto;
   border: 1px solid var(--bt-border);
-  border-radius: 0 0 var(--bt-radius) var(--bt-radius);
+  border-radius: var(--bt-radius);
   box-shadow: var(--bt-shadow);
   background: var(--bt-bg);
 }
@@ -201,13 +203,22 @@
   z-index: 10;
 }
 
+.thead tr:first-child th:first-child {
+  border-top-left-radius: calc(var(--bt-radius) - 1px);
+}
+
+.thead tr:first-child th:last-child {
+  border-top-right-radius: calc(var(--bt-radius) - 1px);
+}
+
 .th {
   padding: 12px 14px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.055em;
-  color: #0f172a;
+  color: var(--bt-thead-text);
+  background-color: var(--bt-thead-bg);
   border-bottom: 1px solid var(--bt-border);
   white-space: nowrap;
   position: relative;
@@ -226,6 +237,18 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.thInnerLast {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.thTitleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
 }
 
 .thLabel {

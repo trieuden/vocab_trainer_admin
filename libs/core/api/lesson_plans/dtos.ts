@@ -10,9 +10,10 @@ export interface GetLessonPlansDto extends PageRequest {
 
 export interface WordDto {
   word: string;
-  audio: string;
-  phonetic: string;
-  definition: string;
+  audio?: string;
+  phonetic?: string;
+  phoneticText?: string;
+  definition?: string;
 }
 
 export interface MultipleChoiceQuestionDto {
@@ -29,6 +30,7 @@ export interface SectionInputDto {
   questions?: MultipleChoiceQuestionDto[];
   refId?: string;
   refType?: LessonPlanType;
+  isTouched?: boolean;
 }
 
 export class CreateLessonPlanDto {
@@ -68,6 +70,7 @@ export interface SegmentState {
   gameVisited: boolean;
   taskType: TaskQuestionType;
   questions: QuestionState[];
+  isTouched?: boolean;
 }
 
 export type TabKey = 'info' | 'warmUp' | 'vocab' | 'grammar' | 'listening' | 'writing' | 'speaking';

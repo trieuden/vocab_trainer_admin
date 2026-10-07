@@ -1,40 +1,35 @@
 'use client';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import i18n from '../../../i18n';
 
 /**
- * Hook to switch between locales by replacing the URL prefix
- * AND updating the 'lang' cookie to satisfy middleware.ts requirements.
+ * Hook to switch between locales by saving to cookie 'lang' and updating i18n.
+ * URLs remain clean without language prefixes.
  */
 export function useLanguageSwitcher() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useParams();
-  const currentLocale = (params?.locale as string) || 'vi';
+  const [currentLocale, setCurrentLocale] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return Cookies.get('lang') || i18n.language || 'vi';
+    }
+    return 'vi';
+  });
 
-  const switchLocale = useCallback(
-    (newLocale: string) => {
-      if (newLocale === currentLocale) return;
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      setCurrentLocale(lng);
+    };
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
 
-      // Update cookie BEFORE navigation so middleware allows the new locale
-      Cookies.set('lang', newLocale, { expires: 365 });
-
-      // Replace the locale segment in the pathname
-      const segments = pathname.split('/');
-      // Pathname usually starts with / so segments[0] is ""
-      if (segments[1] === 'en' || segments[1] === 'vi') {
-        segments[1] = newLocale;
-      } else {
-        // Fallback if pathname doesn't have locale yet
-        segments.splice(1, 0, newLocale);
-      }
-      
-      const newPath = segments.join('/');
-      router.push(newPath);
-    },
-    [currentLocale, pathname, router]
-  );
+  const switchLocale = useCallback((newLocale: string) => {
+    Cookies.set('lang', newLocale, { expires: 365, path: '/' });
+    void i18n.changeLanguage(newLocale);
+    setCurrentLocale(newLocale);
+  }, []);
 
   return { currentLocale, switchLocale };
 }

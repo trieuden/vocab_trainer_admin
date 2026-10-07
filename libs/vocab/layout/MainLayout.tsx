@@ -30,26 +30,26 @@ function useMenuItems(): NavItem[] {
       label: isMounted ? t('nav.users') : 'nav.users',
       icon: <Users size={18} />,
       children: [
-        { id: 'teachers', label: isMounted ? t('nav.teachers') : 'nav.teachers', href: '/users/teachers', icon: <UserCheck size={16} /> },
-        { id: 'students', label: isMounted ? t('nav.students') : 'nav.students', href: '/users/students', icon: <GraduationCap size={16} /> },
+        { id: 'teachers', label: isMounted ? t('nav.teachers') : 'nav.teachers', href: '/users/teachers/', icon: <UserCheck size={16} /> },
+        { id: 'students', label: isMounted ? t('nav.students') : 'nav.students', href: '/users/students/', icon: <GraduationCap size={16} /> },
       ],
     },
     {
       id: 'lesson-plans',
       label: isMounted ? t('nav.lesson_plans') : 'nav.lesson_plans',
-      href: '/lesson-plans',
+      href: '/lesson-plans/',
       icon: <FileStack size={18} />,
     },
     {
       id: 'minigame',
       label: isMounted ? t('nav.minigame') : 'nav.minigame',
-      href: '/minigame',
+      href: '/minigame/',
       icon: <GamepadIcon size={18} />,
     },
     {
       id: 'settings',
       label: isMounted ? t('nav.settings') : 'nav.settings',
-      href: '/settings',
+      href: '/settings/',
       icon: <Settings size={18} />,
     },
   ];

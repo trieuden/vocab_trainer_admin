@@ -30,6 +30,7 @@ i18n
     supportedLngs: ["en", "vi"],
     defaultNS: "common",
     fallbackNS: "common",
+    ns: I18N_NAMESPACES,
     debug: false,
     interpolation: {
       escapeValue: false,

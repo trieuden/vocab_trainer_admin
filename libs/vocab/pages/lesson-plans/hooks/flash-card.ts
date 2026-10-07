@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { defineWords, suggestWords } from '@/core/api/dictionary';
+import { suggestWords } from '@/core/api/dictionary';
 import { generateFlashcardDefinitions } from '@/core/api/gemini';
 import { enumData } from '@/core/enums/enumData';
 
@@ -56,18 +56,26 @@ export const useFlashcardWordManager = () => {
   const { suggestions, loading } = useSuggestWords(inputWord);
   const [generateLoading, setGenerateLoading] = useState(false);
 
-  const handleAddWord = async (text: string) => {
-    setIsAddingWord(true);
+  const handleAddWord = (text: string) => {
+    const trimmed = text?.trim();
+    if (!trimmed) return;
 
-    const data = await defineWords({ word: text });
-    const word = {
-      word: data.word,
-      audio: data.phonetics?.[0]?.audio ?? '',
-      phoneticText: data.phonetic,
-      definition: data.definition,
+    // Tránh thêm từ trùng lặp
+    const exists = words.some((w) => w.word?.toLowerCase() === trimmed.toLowerCase());
+    if (exists) {
+      setInputWord('');
+      setShowSuggest(false);
+      return;
+    }
+
+    const newWord = {
+      word: trimmed,
+      audio: '',
+      phoneticText: '',
+      definition: '',
     };
-    if (!word) return;
-    setWords((prev) => [...prev, word]);
+
+    setWords((prev) => [...prev, newWord]);
     setInputWord('');
     setShowSuggest(false);
   };
@@ -79,37 +87,68 @@ export const useFlashcardWordManager = () => {
     });
   };
 
-  const generateDefinitions = async (words: string[]) => {
+  const generateDefinitions = async (wordsToGen: string[]) => {
+    if (!wordsToGen || wordsToGen.length === 0) return;
+
     setGenerateLoading(true);
-    const data = await generateFlashcardDefinitions({ words });
+    setLoadingMap((prev) => {
+      const next = { ...prev };
+      wordsToGen.forEach((w) => {
+        next[w] = true;
+      });
+      return next;
+    });
 
-    setWords((prev) =>
-      prev.map((w) => {
-        const index = words.indexOf(w.word);
-        if (index !== -1) {
-          return { ...w, definition: data[index].definition };
-        }
-        return w;
-      }),
-    );
+    try {
+      const data = await generateFlashcardDefinitions({ words: wordsToGen });
 
-    setGenerateLoading(false);
-    return data;
+      setWords((prev) =>
+        prev.map((w) => {
+          const item = Array.isArray(data)
+            ? data.find((d: any) => d.word?.toLowerCase() === w.word?.toLowerCase())
+            : null;
+
+          if (item) {
+            return {
+              ...w,
+              definition: item.definition ?? w.definition,
+              phoneticText: item.phonetic ?? item.phoneticText ?? w.phoneticText,
+              audio: item.audio ?? w.audio,
+            };
+          }
+
+          const index = wordsToGen.indexOf(w.word);
+          if (index !== -1 && data?.[index]) {
+            return {
+              ...w,
+              definition: data[index].definition ?? w.definition,
+              phoneticText: data[index].phonetic ?? data[index].phoneticText ?? w.phoneticText,
+              audio: data[index].audio ?? w.audio,
+            };
+          }
+          return w;
+        }),
+      );
+
+      return data;
+    } catch (err) {
+      console.error('Failed to generate definitions', err);
+    } finally {
+      setGenerateLoading(false);
+      setLoadingMap((prev) => {
+        const next = { ...prev };
+        wordsToGen.forEach((w) => {
+          delete next[w];
+        });
+        return next;
+      });
+    }
   };
 
   const generateAllDefinitions = async () => {
-    setGenerateLoading(true);
-    const data = await generateFlashcardDefinitions({ words: words.map((w) => w.word) });
-
-    setWords((prev) =>
-      prev.map((w) => {
-        const updated = data.find((item: any) => item.word === w.word);
-        return updated ? { ...w, definition: updated.definition } : w;
-      }),
-    );
-
-    setGenerateLoading(false);
-    return data;
+    if (words.length === 0) return;
+    const allWords = words.map((w) => w.word);
+    return generateDefinitions(allWords);
   };
 
   const clear = () => {

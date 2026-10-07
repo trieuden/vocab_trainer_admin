@@ -54,7 +54,7 @@ export function BaseAdvancedSearch({
           key={field.key}
           style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, maxWidth: field.width }}
         >
-          <span style={{ fontSize: 12, color: '#1e293b', fontWeight: 700 }}>
+          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
             {field.label}
           </span>
           <input
@@ -62,22 +62,10 @@ export function BaseAdvancedSearch({
             value={values[field.key] ?? ''}
             onChange={(e) => onChange(field.key, e.target.value)}
             placeholder={field.placeholder}
-            style={{
-              width: '100%',
-              padding: '8px 10px',
-              fontSize: 13,
-              border: '1px solid #d1d5db',
-              borderRadius: 6,
-              outline: 'none',
-              background: 'transparent',
-              color: 'inherit',
-              fontFamily: 'inherit',
-              boxSizing: 'border-box',
-            }}
+            className="w-full px-2.5 py-1.5 text-[13px] border border-slate-300 dark:border-slate-700 rounded-md outline-none bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-normal focus:border-blue-500 dark:focus:border-blue-400 transition-colors box-border"
           />
         </label>
       ))}
-
     </div>
   );
 
@@ -86,42 +74,17 @@ export function BaseAdvancedSearch({
   }
 
   return (
-    <div
-      style={{
-        width: '100%',
-        border: '1px solid #d1d5db',
-        borderRadius: 8,
-        padding: '8px 16px 8px 16px',
-      }}
-    >
+    <div className="w-full border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
       <div
         onClick={() => setIsOpen((v) => !v)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: isOpen ? 12 : 0,
-          paddingBottom: isOpen ? 8 : 0,
-          borderBottom: `1px solid ${isOpen ? '#e2e8f0' : 'transparent'}`,
-          cursor: 'pointer',
-          userSelect: 'none',
-          transition: 'all 300ms ease-in-out',
-        }}
+        className={`flex items-center justify-between cursor-pointer select-none transition-all duration-300 ${
+          isOpen ? 'mb-3 pb-2 border-b border-slate-200 dark:border-slate-800' : ''
+        }`}
       >
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>{panelTitle}</span>
+        <span className="text-[13px] font-medium text-slate-800 dark:text-slate-200">{panelTitle}</span>
         <button
           type="button"
-          style={{
-            height: 36,
-            borderRadius: 6,
-            background: 'transparent',
-            border: 'none',
-            color: 'inherit',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          className="h-9 w-9 rounded-md bg-transparent border-none text-slate-500 dark:text-slate-400 cursor-pointer flex items-center justify-center hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
           aria-label={isOpen ? 'Collapse advanced search' : 'Expand advanced search'}
         >
           <ChevronDown
@@ -151,20 +114,7 @@ export function BaseAdvancedSearch({
               <button
                 type="button"
                 onClick={onSearch}
-                style={{
-                  height: 32,
-                  padding: '0 12px',
-                  border: 'none',
-                  borderRadius: 6,
-                  background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                }}
+                className="h-8 px-3 border-none rounded-md bg-gradient-to-r from-blue-500 to-indigo-500 text-white cursor-pointer text-xs font-medium inline-flex items-center gap-1.5 hover:opacity-90 transition-opacity"
               >
                 <Search size={14} />
                 {searchLabel ?? t('search')}
@@ -174,17 +124,7 @@ export function BaseAdvancedSearch({
                 <button
                   type="button"
                   onClick={onReset}
-                  style={{
-                    height: 32,
-                    padding: '0 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: 6,
-                    background: 'transparent',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    fontSize: 12,
-                    fontWeight: 600,
-                  }}
+                  className="h-8 px-3 border border-slate-300 dark:border-slate-700 rounded-md bg-transparent text-slate-700 dark:text-slate-300 cursor-pointer text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   {resetLabel ?? t('cancel')}
                 </button>

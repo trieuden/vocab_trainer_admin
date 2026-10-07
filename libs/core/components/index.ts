@@ -45,3 +45,6 @@ export type { BaseStatusBadgeProps } from './base-status-badge/base-status-badge
 
 export { BaseToolbar } from './base-toolbar/base-toolbar';
 export type { BaseToolbarProps } from './base-toolbar/base-toolbar';
+
+export { BaseDrawer } from './base-drawer/base-drawer';
+export type { BaseDrawerProps } from './base-drawer/base-drawer';

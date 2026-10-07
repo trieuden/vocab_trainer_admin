@@ -50,18 +50,18 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
   };
 
   const handleAddQuestion = () => {
-    setCurrentState((s) => ({ ...s, questions: [...s.questions, { question: '', correctAnswer: '', wrongAnswers: [] }] }));
+    setCurrentState((s) => ({ ...s, isTouched: true, questions: [...s.questions, { question: '', correctAnswer: '', wrongAnswers: [] }] }));
   };
 
   const handleRemoveQuestion = (index: number) => {
-    setCurrentState((s) => ({ ...s, questions: s.questions.filter((_, i) => i !== index) }));
+    setCurrentState((s) => ({ ...s, isTouched: true, questions: s.questions.filter((_, i) => i !== index) }));
   };
 
   const handleUpdateQuestion = (index: number, field: keyof QuestionState, value: any) => {
     setCurrentState((s) => {
       const updated = [...s.questions];
       updated[index] = { ...updated[index], [field]: value };
-      return { ...s, questions: updated };
+      return { ...s, isTouched: true, questions: updated };
     });
   };
 
@@ -77,7 +77,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
             backgroundColor: currentState.tab === ELessonPlan.LessonPlanType.TASK.code ? theme.primary.main : 'transparent',
             color: currentState.tab === ELessonPlan.LessonPlanType.TASK.code ? theme.primary.text : theme.text.secondary
           }}
-          onClick={() => setCurrentState((s) => ({ ...s, tab: ELessonPlan.LessonPlanType.TASK.code as any }))}
+          onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, tab: ELessonPlan.LessonPlanType.TASK.code as any }))}
         >
           {tl('add_popup.tab_task')}
         </button>
@@ -90,7 +90,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
             backgroundColor: currentState.tab === 'GAME' ? theme.primary.main : 'transparent',
             color: currentState.tab === 'GAME' ? theme.primary.text : theme.text.secondary
           }}
-          onClick={() => setCurrentState((s) => ({ ...s, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code as any }))}
+          onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, gameVisited: true, tab: ELessonPlan.LessonPlanType.GAME.code as any }))}
         >
           {tl('add_popup.tab_game')}
         </button>
@@ -112,7 +112,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
                   backgroundColor: currentState.taskType === 'ESSAY' ? theme.primary.main : 'transparent',
                   color: currentState.taskType === 'ESSAY' ? theme.primary.text : theme.text.secondary
                 }}
-                onClick={() => setCurrentState((s) => ({ ...s, taskType: 'ESSAY' }))}
+                onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, taskType: 'ESSAY' }))}
               >
                 {tl('add_popup.task_type_essay')}
               </button>
@@ -123,7 +123,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
                   backgroundColor: currentState.taskType === 'MULTIPLE_CHOICE' ? theme.primary.main : 'transparent',
                   color: currentState.taskType === 'MULTIPLE_CHOICE' ? theme.primary.text : theme.text.secondary
                 }}
-                onClick={() => setCurrentState((s) => ({ ...s, taskType: 'MULTIPLE_CHOICE' }))}
+                onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, taskType: 'MULTIPLE_CHOICE' }))}
               >
                 {tl('add_popup.task_type_multiple_choice')}
               </button>
@@ -208,7 +208,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
                   backgroundColor: currentState.gameType === EGame.GameType.FLASHCARD.code ? theme.primary.main : 'transparent',
                   color: currentState.gameType === EGame.GameType.FLASHCARD.code ? theme.primary.text : theme.text.secondary
                 }}
-                onClick={() => setCurrentState((s) => ({ ...s, gameType: EGame.GameType.FLASHCARD.code as any }))}
+                onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, gameType: EGame.GameType.FLASHCARD.code as any }))}
               >
                 {EGame.GameType.FLASHCARD.name}
               </button>
@@ -219,7 +219,7 @@ export const SectionForm = ({ currentState, setCurrentState, currentLabel, curre
                   backgroundColor: currentState.gameType === EGame.GameType.CROSSWORD.code ? theme.primary.main : 'transparent',
                   color: currentState.gameType === EGame.GameType.CROSSWORD.code ? theme.primary.text : theme.text.secondary
                 }}
-                onClick={() => setCurrentState((s) => ({ ...s, gameType: EGame.GameType.CROSSWORD.code as any }))}
+                onClick={() => setCurrentState((s) => ({ ...s, isTouched: true, gameType: EGame.GameType.CROSSWORD.code as any }))}
               >
                 {EGame.GameType.CROSSWORD.name}
               </button>
